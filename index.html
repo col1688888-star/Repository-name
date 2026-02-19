@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>機台界面 · 抽屜獨立全右側</title>
+    <title>機台界面 · 北斗神拳 1:2 (顏色加亮)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg7.min.css">
     <style>
@@ -388,8 +388,7 @@
             margin-bottom: 6px;
         }
 
-        /* ========= 全新獨立抽屜 (不侷限在大賞燈內) ========= */
-        /* 觸發區 - 改為固定在主畫面右側邊緣 */
+        /* ========= 獨立抽屜 ========= */
         .drawer-trigger-area {
             position: fixed;
             right: 0;
@@ -421,10 +420,9 @@
             text-shadow: 0 2px 2px #000;
         }
 
-        /* 抽屜本體 - 獨立於主機台之外，固定在右側 */
         .slide-drawer {
             position: fixed;
-            right: -300px;          /* 完全隱藏時不可見 */
+            right: -300px;
             top: 12px;
             bottom: 12px;
             width: 280px;
@@ -474,7 +472,7 @@
             border-radius: 10px;
         }
 
-        /* PiP 滑軌開關 (保留) */
+        /* PiP 滑軌開關 */
         .pip-section {
             background: #1a3342;
             border: 2px solid #2e7a9a;
@@ -559,7 +557,7 @@
         }
         .vivo-tip.show { display: block; }
 
-        /* 抽屜內新樣式：機台名稱／保留時間／收藏／捷徑 */
+        /* 抽屜內新樣式 - 北斗神拳＋1:2比率 + 顏色加亮 */
         .drawer-block {
             background: #1d3342;
             border: 1px solid #2e6078;
@@ -578,25 +576,35 @@
             align-items: center;
             gap: 5px;
         }
-        .machine-name-rate {
+        
+        /* 機台名稱區塊 - 右側顯示1:2比率 */
+        .machine-name-area {
             display: flex;
+            align-items: center;
             justify-content: space-between;
             background: #10202b;
             border-radius: 30px;
-            padding: 10px 14px;
-            margin-bottom: 12px;
+            padding: 12px 16px;
             border: 1px solid #2e7a9a;
         }
-        .machine-name-rate span:first-child {
+        .machine-name-area .name {
             color: #b0e0ff;
-            font-weight: 600;
-            font-size: 15px;
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 1px;
         }
-        .machine-name-rate span:last-child {
-            color: #f5e37a;
-            font-family: 'DSEG7 Classic', monospace;
+        .machine-name-area .ratio-badge {
+            background: #c47c34;
+            color: #111;
             font-size: 16px;
+            font-weight: bold;
+            font-family: 'DSEG7 Classic', monospace;
+            padding: 4px 12px;
+            border-radius: 40px;
+            border: 1px solid #efb36e;
+            box-shadow: inset 0 1px 3px #00000060;
         }
+
         .retain-time {
             background: #102834;
             border-radius: 20px;
@@ -637,6 +645,8 @@
             border: 1px dashed #3e809c;
             margin: 10px 0;
         }
+        
+        /* ★Ω 北斗神拳 98.2% - 加亮 */
         .fav-star {
             display: flex;
             align-items: center;
@@ -648,9 +658,22 @@
             border: 1px solid #d4af37;
         }
         .fav-star .star {
-            color: gold;
+            color: #FFD966;  /* 更亮的金色 */
             font-size: 18px;
+            text-shadow: 0 0 5px #FFD966;
         }
+        .fav-star span:not(.star) {
+            color: #FFFFFF;  /* 純白色 */
+            font-weight: 600;
+            text-shadow: 0 1px 2px #000;
+        }
+        .fav-star span:last-child {
+            color: #FFE484;  /* 亮黃色 */
+            font-family: 'DSEG7 Classic', monospace;
+            font-weight: bold;
+            text-shadow: 0 0 3px #FFD700;
+        }
+
         .quick-jump-section p {
             color: #8fcae0;
             font-size: 11px;
@@ -685,6 +708,7 @@
         .jump-badge.fav { background: #5f4a2c; border-color: #e5c87b; color: #ffefc0; }
         .jump-badge.reserved { background: #6f4f3a; border-color: #d59b6b; }
 
+        /* 🎰機台編號 和 💎庫存代幣 - 加亮 */
         .drawer-item-old {
             background: #1d3342;
             border: 1px solid #2e6078;
@@ -695,6 +719,16 @@
             align-items: center;
             gap: 8px;
         }
+        .drawer-item-icon {
+            font-size: 18px;
+            filter: brightness(1.3);  /* 讓圖標更亮 */
+        }
+        .drawer-item-text {
+            color: #FFFFFF;  /* 純白色 */
+            font-weight: 600;
+            font-size: 13px;
+            text-shadow: 0 1px 2px #000;
+        }
         .drawer-item-value {
             margin-left: auto;
             background: #003d55;
@@ -702,10 +736,12 @@
             border-radius: 20px;
             font-size: 11px;
             font-family: 'DSEG7 Classic', monospace;
-            color: #f5e37a;
+            color: #FFE484;  /* 亮黃色 */
+            font-weight: bold;
+            text-shadow: 0 0 3px #FFD700;
         }
 
-        /* 遮罩層 (點擊外部關閉抽屜) */
+        /* 遮罩層 */
         .drawer-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -725,12 +761,12 @@
     <!-- 狀態訊息 -->
     <div class="status-message" id="statusMessage"></div>
 
-    <!-- 抽屜遮罩 (獨立控制) -->
+    <!-- 抽屜遮罩 -->
     <div class="drawer-overlay" id="drawerOverlay"></div>
 
-    <!-- 主機台 (內容完全不動, 但原本dataArea內的抽屜trigger與抽屜將移出) -->
+    <!-- 主機台 -->
     <div id="playMainArea">
-        <!-- 大賞燈區 (完全移除原本的抽屜相關元素) -->
+        <!-- 大賞燈區 -->
         <div id="dataArea">
             <div class="prize-light-container-special" id="prizeLightContainer">
                 <div class="prizeLightPages" id="prizeLightPages">
@@ -754,7 +790,6 @@
                     <div class="cyber-dots" id="prizeLightDots"><div class="cyber-dot active" data-index="0"></div><div class="cyber-dot" data-index="1"></div><div class="cyber-dot" data-index="2"></div></div>
                     <button class="cyber-arrow" id="nextPrizeLightPage">▶</button>
                 </div>
-                <!-- 原本抽屜trigger area 被移除了！ -->
             </div>
         </div>
 
@@ -803,24 +838,24 @@
         </div>
     </div>
 
-    <!-- ========= 獨立抽屜 trigger (固定於畫面右側) ========= -->
+    <!-- 獨立抽屜 trigger -->
     <div class="drawer-trigger-area" id="drawerTriggerArea">
         <div class="drawer-arrow" id="drawerArrow">◀</div>
     </div>
 
-    <!-- ========= 獨立抽屜本體 (內容完全從原抽屜移植並強化) ========= -->
+    <!-- 獨立抽屜本體 (頂部顯示北斗神拳 + 1:2) -->
     <div class="slide-drawer" id="slideDrawer">
         <div class="drawer-header">
-            <span>⚙️ 完整工具抽屜</span>
+            <span>⚙️ 北斗神拳 · 特仕抽屜</span>
             <button id="drawerCloseBtn" style="background:transparent; border:none; color:#8fcae0; font-size:18px;">✕</button>
         </div>
         <div class="drawer-content">
-            <!-- 1. 機台名字＋比率 -->
+            <!-- 1. 機台名字：北斗神拳 + 比率1:2 -->
             <div class="drawer-block">
                 <div class="drawer-block-title">🎰 機台名稱 · 比率</div>
-                <div class="machine-name-rate">
-                    <span>PACHINKO-Ω</span>
-                    <span>98.6%</span>
+                <div class="machine-name-area">
+                    <span class="name">北斗神拳</span>
+                    <span class="ratio-badge">1:2</span>
                 </div>
             </div>
 
@@ -841,7 +876,7 @@
                 <div class="machine-data-row"><span>最終遊玩</span><span>10分鐘前</span></div>
             </div>
 
-            <!-- 4. 機台攻略 (抽屜內快速版) -->
+            <!-- 4. 機台攻略 -->
             <div class="drawer-block">
                 <div class="drawer-block-title">📘 機台攻略</div>
                 <div class="strategy-preview">
@@ -851,13 +886,12 @@
                 </div>
             </div>
 
-            <!-- 5. 收藏機台 ＋ 下方捷徑 -->
+            <!-- 5. 收藏機台 ＋ 下方捷徑 (★Ω 北斗神拳 98.2% 已加亮) -->
             <div class="drawer-block">
                 <div class="drawer-block-title">⭐ 收藏機台</div>
                 <div class="fav-star">
-                    <span class="star">★</span><span>Ω 北斗神拳</span><span style="margin-left:auto;">98.2%</span>
+                    <span class="star">★</span><span>Ω 北斗神拳</span><span>98.2%</span>
                 </div>
-                <!-- 快速進入捷徑 遊戲中/保留中/我的最愛 -->
                 <div class="quick-jump-section">
                     <p>🎮 遊戲中 · 快速進入</p>
                     <div class="jump-badge-container">
@@ -881,7 +915,7 @@
                 </div>
             </div>
 
-            <!-- 保留原始的PiP滑軌開關以及一些舊元件 -->
+            <!-- PiP 滑軌開關 -->
             <div class="pip-section">
                 <div class="pip-title">📺 子母視訊畫面</div>
                 <div class="pip-slider-container">
@@ -893,7 +927,7 @@
                 <div class="vivo-tip" id="vivoTip">📱 VIVO手機請依指示操作：<br>1. 點影片右下角「全螢幕」<br>2. 按手機「Home鍵」返回桌面</div>
             </div>
 
-            <!-- 保留原始抽屜元件（機台編號、庫存代幣） -->
+            <!-- 🎰機台編號 和 💎庫存代幣 (已加亮) -->
             <div class="drawer-item-old">
                 <div class="drawer-item-icon">🎰</div><div class="drawer-item-text">機台編號</div><div class="drawer-item-value">#01</div>
             </div>
@@ -998,40 +1032,26 @@
             document.getElementById('machineHistoryList').innerHTML = '<div style="color:#c0ddec;">· 02/15 最大獎8500</div><div style="color:#c0ddec;">· 02/12 BB連發2次</div>';
             document.getElementById('machineStrategyList').innerHTML = '<div style="color:#c0ddec;">📌 20:00後RB機率較高</div><div style="color:#c0ddec;">📌 連10沒中可略增注</div>';
 
-            // ===== 獨立抽屜控制 (trigger, drawer, overlay, close) =====
+            // 抽屜控制
             const triggerArea = document.getElementById('drawerTriggerArea');
             const drawer = document.getElementById('slideDrawer');
             const closeBtn = document.getElementById('drawerCloseBtn');
             const overlay = document.getElementById('drawerOverlay');
 
-            function openDrawer() {
-                drawer.classList.add('open');
-                overlay.classList.add('active');
-            }
-            function closeDrawer() {
-                drawer.classList.remove('open');
-                overlay.classList.remove('active');
-            }
+            function openDrawer() { drawer.classList.add('open'); overlay.classList.add('active'); }
+            function closeDrawer() { drawer.classList.remove('open'); overlay.classList.remove('active'); }
 
-            triggerArea.addEventListener('click', (e) => {
-                e.stopPropagation();
-                openDrawer();
-            });
-
-            closeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                closeDrawer();
-            });
-
+            triggerArea.addEventListener('click', (e) => { e.stopPropagation(); openDrawer(); });
+            closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeDrawer(); });
             overlay.addEventListener('click', closeDrawer);
 
-            // 點擊快速捷徑 badge 可切換機台 (模擬)
+            // 快速捷徑
             document.querySelectorAll('.jump-badge').forEach(badge => {
                 badge.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const machine = badge.innerText.replace(/[⚡⏰⭐]/g,'').trim() || '未知機台';
                     showMessage(`快速切換至 ${machine}`, 'success');
-                    closeDrawer(); // 切換後關閉抽屜
+                    closeDrawer();
                 });
             });
 
