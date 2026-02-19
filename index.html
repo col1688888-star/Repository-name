@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg7.min.css">
     <style>
-        /* ----- 全域重置 (與原設計一致) ----- */
+        /* ----- 全域重置 ----- */
         * {
             margin: 0;
             padding: 0;
@@ -106,30 +106,29 @@
             box-shadow: 0 0 0 3px #c9a244, 0 8px 0 #0a121c;
         }
 
-        /* PiP 小提示 */
-        .pip-hint {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-            background: #1f3e50;
-            border: 2px solid #f5e37a;
-            border-radius: 40px;
-            padding: 12px 20px;
-            color: white;
-            font-size: 14px;
-            text-align: center;
-            z-index: 5000;
-            transform: translateY(100px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 5px 0 #0f303f;
+        /* 頂部面板數值顏色 - 修復黑色字體問題 */
+        #panelTop dl { 
+            text-align: center; 
         }
-        .pip-hint.show {
-            transform: translateY(0);
-        }
-        .pip-hint .highlight {
-            color: #f5e37a;
+        #panelTop dt {
+            font-size: 9px;
+            color: #a0c8dd !important;  /* 強制使用這個顏色 */
             font-weight: bold;
+        }
+        #panelTop dd {
+            font-size: 13px;
+            font-family: 'DSEG7 Classic', monospace;
+            color: #f3de8a !important;  /* 強制使用金色 */
+        }
+
+        /* 確保 Medal 也是金色 */
+        #medalNum {
+            color: #f3de8a !important;
+        }
+
+        /* 確保 BB Point 也是金色 */
+        #bbPoint {
+            color: #f3de8a !important;
         }
 
         /* 大賞燈容器 */
@@ -310,6 +309,11 @@
             background: #1f6f8f;
             border: 2px solid #6fb4cf;
             box-shadow: 0 4px 0 #0f3545, 0 2px 6px #000;
+            color: white;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .stop-btn:active {
             transform: translateY(3px);
@@ -326,34 +330,6 @@
             position: relative;
             cursor: pointer;
             transition: all 0.08s linear;
-        }
-
-        .joystick::before {
-            content: "";
-            position: absolute;
-            width: 34px;
-            height: 34px;
-            background: linear-gradient(145deg, #e4edf8, #8f9fb2);
-            border-radius: 50%;
-            border: 2px solid #d2e5ff;
-            box-shadow: inset -3px -3px 6px #1a2b38, inset 3px 3px 8px #ffffffd0;
-            top: 8px;
-            left: 8px;
-            z-index: 2;
-        }
-
-        .joystick::after {
-            content: "⬢";
-            position: absolute;
-            color: #1e2b33;
-            font-size: 22px;
-            font-weight: 900;
-            transform: rotate(15deg) scaleX(1.2);
-            top: 12px;
-            left: 17px;
-            z-index: 3;
-            opacity: 0.9;
-            text-shadow: 0 1px 2px #abbac9, -1px -1px 1px #1b2b36;
         }
 
         .status-message {
@@ -374,6 +350,56 @@
             transition: transform 0.3s ease;
         }
         .status-message.show { transform: translateY(0); }
+
+        /* PiP 教學提示 */
+        .pip-tutorial {
+            position: fixed;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            transform: translateY(-50%);
+            background: #1f3e50;
+            border: 3px solid #f5e37a;
+            border-radius: 30px;
+            padding: 25px 20px;
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 0 #0f303f;
+        }
+        .pip-tutorial.show { display: flex; }
+        .pip-tutorial-title {
+            color: #f5e37a;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .pip-tutorial-step {
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            line-height: 2;
+        }
+        .pip-tutorial-highlight {
+            background: #f5e37a;
+            color: #111;
+            padding: 5px 15px;
+            border-radius: 40px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .pip-tutorial-close {
+            background: #c9a244;
+            border: none;
+            color: #111;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 40px;
+            font-size: 16px;
+            margin-top: 10px;
+            box-shadow: 0 4px 0 #7a5f2a;
+        }
 
         .prize-light-navigation {
             position: absolute;
@@ -416,7 +442,7 @@
             margin-bottom: 6px;
         }
 
-        /* 抽屜樣式 - 強化了 PiP 區塊 */
+        /* 抽屜樣式 */
         .drawer-trigger-area {
             position: absolute;
             right: 0;
@@ -484,14 +510,13 @@
             background: #14222e;
         }
 
-        /* PiP 專用區塊 - 明顯突出 */
+        /* PiP 專區 */
         .pip-section {
             background: #1a3342;
             border: 2px solid #f5e37a;
             border-radius: 16px;
             padding: 12px 8px;
             margin-bottom: 12px;
-            box-shadow: 0 0 0 1px #c9a244;
         }
 
         .pip-title {
@@ -500,21 +525,14 @@
             font-weight: bold;
             text-align: center;
             margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        .pip-buttons {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
         }
 
         .pip-btn {
-            flex: 1;
+            width: 100%;
             height: 44px;
             border-radius: 30px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 14px;
             border: 1px solid;
             box-shadow: 0 3px 0 #0f303f;
             transition: 0.1s;
@@ -522,26 +540,31 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 8px;
+            margin-bottom: 8px;
         }
         .pip-btn:active {
             transform: translateY(3px);
             box-shadow: 0 1px 0 #0f303f;
         }
-        .pip-btn-start {
-            background: #1f6f8f;
-            border-color: #6fb4cf;
-            color: white;
-        }
-        .pip-btn-stop {
-            background: #be3e62;
-            border-color: #d4668a;
-            color: white;
-        }
-        .pip-btn-hint {
-            background: #c9a244;
+        .pip-btn-teach {
+            background: #f5e37a;
             border-color: #eed685;
             color: #111;
+        }
+
+        .pip-status-badge {
+            background: #0f3545;
+            border-radius: 20px;
+            padding: 6px 8px;
+            font-size: 10px;
+            color: #8fcae0;
+            text-align: center;
+            margin-top: 8px;
+        }
+        .pip-status-badge.active {
+            background: #f5e37a20;
+            color: #f5e37a;
         }
 
         .drawer-item {
@@ -555,18 +578,6 @@
             gap: 6px;
         }
 
-        .drawer-item-icon {
-            width: 24px;
-            height: 24px;
-            background: #234d60;
-            border-radius: 30%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            border: 1px solid #4797b5;
-        }
-
         .drawer-item-value {
             margin-left: auto;
             background: #003d55;
@@ -576,33 +587,25 @@
             font-family: 'DSEG7 Classic', monospace;
             color: #f5e37a;
         }
-
-        .pip-status-badge {
-            background: #0f3545;
-            border-radius: 20px;
-            padding: 4px 8px;
-            font-size: 9px;
-            color: #8fcae0;
-            text-align: center;
-            margin-top: 8px;
-            border: 1px solid #2e7a9a;
-        }
-        .pip-status-badge.active {
-            background: #f5e37a20;
-            color: #f5e37a;
-            border-color: #f5e37a;
-        }
     </style>
 </head>
 <body>
     <div class="status-message" id="statusMessage"></div>
-    <div class="pip-hint" id="pipHint">
-        <span class="highlight">📺 提示：</span> 長按視訊選擇「進入子母畫面」
+    
+    <!-- PiP 教學視窗 -->
+    <div class="pip-tutorial" id="pipTutorial">
+        <div class="pip-tutorial-title">📺 子母畫面教學</div>
+        <div class="pip-tutorial-step">
+            1. 找到轉軸區的視訊<br>
+            2. <span class="pip-tutorial-highlight">長按視訊 1-2 秒</span><br>
+            3. 選擇「進入子母畫面」
+        </div>
+        <button class="pip-tutorial-close" id="closeTutorial">知道了</button>
     </div>
 
     <!-- 主機台 -->
     <div id="playMainArea">
-        <!-- 大賞燈區 (抽屜現在包含 PiP 控制) -->
+        <!-- 大賞燈區 -->
         <div id="dataArea">
             <div class="prize-light-container-special" id="prizeLightContainer">
                 <div class="prizeLightPages" id="prizeLightPages">
@@ -650,7 +653,7 @@
                     <button class="cyber-arrow" id="nextPrizeLightPage">▶</button>
                 </div>
 
-                <!-- 抽屜 - 現在包含 PiP 控制區塊 -->
+                <!-- 抽屜 - 包含 PiP 教學按鈕 -->
                 <div class="drawer-trigger-area" id="drawerTriggerArea">
                     <div class="drawer-arrow" id="drawerArrow">◀</div>
                 </div>
@@ -660,22 +663,15 @@
                         <button id="drawerCloseBtn" style="background:transparent; border:none; color:#8fcae0; font-size:16px;">✕</button>
                     </div>
                     <div class="drawer-content">
-                        <!-- PiP 控制區塊 - 醒目設計 -->
+                        <!-- PiP 教學區塊 -->
                         <div class="pip-section">
-                            <div class="pip-title">📺 子母畫面控制</div>
-                            <div class="pip-buttons">
-                                <button class="pip-btn pip-btn-start" id="pipStartBtn">
-                                    <span>▶</span> 啟動
-                                </button>
-                                <button class="pip-btn pip-btn-stop" id="pipStopBtn">
-                                    <span>⏹</span> 關閉
-                                </button>
-                            </div>
-                            <div class="pip-buttons" style="margin-top: 6px;">
-                                <button class="pip-btn pip-btn-hint" id="pipHintBtn" style="width:100%;">
-                                    <span>📌</span> 如何操作
-                                </button>
-                            </div>
+                            <div class="pip-title">📺 子母畫面</div>
+                            <button class="pip-btn pip-btn-teach" id="showPiPTutorial">
+                                <span>🎓</span> 如何開啟子母畫面
+                            </button>
+                            <button class="pip-btn pip-btn-teach" id="closePiP">
+                                <span>⏹</span> 關閉子母畫面
+                            </button>
                             <div class="pip-status-badge" id="pipStatus">
                                 ⚪ 子母畫面未啟用
                             </div>
@@ -704,32 +700,38 @@
                     <video class="reel-video" id="videoL" autoplay loop muted playsinline webkit-playsinline>
                         <source src="#" type="video/mp4">
                     </video>
-                    <div class="video-placeholder">🎰 左輪 · 點擊播放</div>
+                    <div class="video-placeholder">🎰 左輪 · 長按可PiP</div>
                 </div>
                 <div class="reel" id="reelC">
                     <video class="reel-video" id="videoC" autoplay loop muted playsinline webkit-playsinline>
                         <source src="#" type="video/mp4">
                     </video>
-                    <div class="video-placeholder">🎰 中輪 · 點擊播放</div>
+                    <div class="video-placeholder">🎰 中輪 · 長按可PiP</div>
                 </div>
                 <div class="reel" id="reelR">
                     <video class="reel-video" id="videoR" autoplay loop muted playsinline webkit-playsinline>
                         <source src="#" type="video/mp4">
                     </video>
-                    <div class="video-placeholder">🎰 右輪 · 點擊播放</div>
+                    <div class="video-placeholder">🎰 右輪 · 長按可PiP</div>
                 </div>
             </div>
         </div>
 
-        <!-- 頂部面板 -->
+        <!-- 頂部面板 - 字體顏色已修復 -->
         <div id="panelTop" class="control-panel">
             <div style="display: flex; align-items: center; height:100%; padding:0 4px;">
                 <div style="width:18%;">
                     <button id="maxBet" class="game-btn btn-red" style="width:100%; height:34px;">MAX</button>
                 </div>
                 <div style="width:60%; display: flex; justify-content: space-around;">
-                    <dl><dt>BB Point</dt><dd id="bbPoint">8,984,002pt</dd></dl>
-                    <dl><dt>Medal</dt><dd id="medalNum">20Coin</dd></dl>
+                    <dl>
+                        <dt>BB Point</dt>
+                        <dd id="bbPoint">8,984,002pt</dd>
+                    </dl>
+                    <dl>
+                        <dt>Medal</dt>
+                        <dd id="medalNum">20Coin</dd>
+                    </dl>
                 </div>
                 <div style="width:18%;">
                     <button id="purchaseMedal" class="game-btn btn-red" style="width:100%; height:34px;">BUY</button>
@@ -737,16 +739,14 @@
             </div>
         </div>
 
-        <!-- 底部面板 - 恢復為純手動遊玩按鈕 -->
+        <!-- 底部面板 - 純手動遊玩 -->
         <div id="panelBottom" class="control-panel">
             <div style="display:flex; align-items:center; justify-content:flex-start; height:100%; padding:0 6px;">
-                <!-- 搖桿 -->
                 <div style="display:flex; justify-content:center; position:relative; left:25px;">
                     <button class="joystick" id="lever">
                         <div class="lever-base-ring"></div>
                     </button>
                 </div>
-                <!-- 停止按鈕 - 純手動使用 -->
                 <div style="display:flex; justify-content:center; gap:32px; margin-left:70px;">
                     <button class="stop-btn" id="btnStopL">⏹</button>
                     <button class="stop-btn" id="btnStopC">⏹</button>
@@ -770,18 +770,13 @@
         (function() {
             // 狀態訊息
             const statusMsg = document.getElementById('statusMessage');
-            const pipHint = document.getElementById('pipHint');
+            const pipTutorial = document.getElementById('pipTutorial');
             
             function showMessage(msg, type = 'info') {
                 statusMsg.innerText = msg;
                 statusMsg.style.borderColor = type === 'error' ? '#c6574a' : (type === 'success' ? '#3fa38c' : '#3487a7');
                 statusMsg.classList.add('show');
                 setTimeout(() => statusMsg.classList.remove('show'), 2500);
-            }
-
-            function showHint() {
-                pipHint.classList.add('show');
-                setTimeout(() => pipHint.classList.remove('show'), 4000);
             }
 
             // 視訊元素
@@ -897,7 +892,6 @@
             stops.forEach((btn, i) => {
                 btn.addEventListener('click', ()=>{
                     if (!rolling || autoMode) return;
-                    // 模擬停止
                     rolling = false;
                     showMessage(`第${i+1}輪停止`);
                 });
@@ -924,13 +918,13 @@
                 }
             });
 
-            // PiP 功能 - 移到抽屜
-            const pipStartBtn = document.getElementById('pipStartBtn');
-            const pipStopBtn = document.getElementById('pipStopBtn');
-            const pipHintBtn = document.getElementById('pipHintBtn');
+            // PiP 功能 - 改為教學模式
             const pipStatus = document.getElementById('pipStatus');
+            const showPiPTutorial = document.getElementById('showPiPTutorial');
+            const closePiP = document.getElementById('closePiP');
+            const closeTutorial = document.getElementById('closeTutorial');
 
-            // 更新 PiP 狀態顯示
+            // 更新 PiP 狀態
             function updatePiPStatus() {
                 const active = videos.some(v => v.webkitPresentationMode === 'picture-in-picture');
                 if (active) {
@@ -944,23 +938,30 @@
                 }
             }
 
-            // 監聽 PiP 狀態變化
             videos.forEach(v => {
                 v.addEventListener('webkitpresentationmodechanged', updatePiPStatus);
             });
 
-            // 啟動 PiP - 改為提示用戶手動操作
-            pipStartBtn.addEventListener('click', () => {
-                showHint();
+            // 顯示教學
+            showPiPTutorial.addEventListener('click', () => {
+                pipTutorial.classList.add('show');
                 // 同時讓視訊閃爍提示
                 videos.forEach(v => {
                     v.style.border = '3px solid #f5e37a';
-                    setTimeout(() => v.style.border = 'none', 2000);
+                    v.style.transition = 'border 0.3s';
+                });
+            });
+
+            // 關閉教學
+            closeTutorial.addEventListener('click', () => {
+                pipTutorial.classList.remove('show');
+                videos.forEach(v => {
+                    v.style.border = 'none';
                 });
             });
 
             // 關閉 PiP
-            pipStopBtn.addEventListener('click', () => {
+            closePiP.addEventListener('click', () => {
                 videos.forEach(v => {
                     if (v.webkitPresentationMode === 'picture-in-picture') {
                         v.webkitSetPresentationMode('inline');
@@ -968,9 +969,6 @@
                 });
                 showMessage('已退出子母畫面');
             });
-
-            // 提示按鈕
-            pipHintBtn.addEventListener('click', showHint);
 
             // 購買代幣
             document.getElementById('purchaseMedal').addEventListener('click', ()=>{
@@ -1047,7 +1045,7 @@
                 }
             });
 
-            // 啟動視訊（需要用戶互動）
+            // 啟動視訊
             document.addEventListener('touchstart', () => {
                 videos.forEach(v => {
                     if (v.paused) {
@@ -1055,6 +1053,14 @@
                     }
                 });
             }, { once: true });
+
+            // 每5秒檢查一次字體顏色（確保不會跑掉）
+            setInterval(() => {
+                const bbPoint = document.getElementById('bbPoint');
+                const medalNum = document.getElementById('medalNum');
+                if (bbPoint) bbPoint.style.color = '#f3de8a';
+                if (medalNum) medalNum.style.color = '#f3de8a';
+            }, 1000);
         })();
     </script>
 </body>
