@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>機台界面 · 單一視訊轉軸＋自動PiP</title>
+    <title>機台界面 · 抽屜獨立全右側</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg7.min.css">
     <style>
@@ -78,7 +78,6 @@
             justify-content: center;
         }
 
-        /* 直立顯示的影片樣式 */
         #remotePlayer {
             position: absolute;
             top: 0;
@@ -109,13 +108,11 @@
             opacity: 0.5;
         }
 
-        /* PiP 啟用時的視覺提示 */
         .pip-active #playMainArea {
             border: 3px solid #f5e37a;
             box-shadow: 0 0 0 3px #c9a244, 0 8px 0 #0a121c;
         }
 
-        /* 頂部面板數值顏色 */
         #panelTop dl { text-align: center; }
         #panelTop dt {
             font-size: 9px;
@@ -128,9 +125,7 @@
             color: #f3de8a !important;
         }
 
-        #medalNum, #bbPoint {
-            color: #f3de8a !important;
-        }
+        #medalNum, #bbPoint { color: #f3de8a !important; }
 
         /* 大賞燈容器 */
         .prize-light-container-special {
@@ -283,7 +278,6 @@
             box-shadow: inset 0 2px 3px #00000050;
         }
 
-        /* 按鈕樣式 */
         .game-btn {
             transition: all 0.1s ease;
             border-radius: 40px;
@@ -299,13 +293,7 @@
             box-shadow: 0 1px 0 #0a1a22, 0 2px 4px #000;
         }
         .btn-red { background: #be3e62; border-color: #d4668a; }
-        
-        .btn-amber { 
-            background: #c47c34; 
-            border-color: #efb36e; 
-            color: white; 
-        }
-        
+        .btn-amber { background: #c47c34; border-color: #efb36e; color: white; }
         .btn-green { background: #1f8f6b; border-color: #52c2a0; }
         .btn-purple { background: #8a5fb0; border-color: #b792e6; }
         .btn-gray { background: #3a4b5e; border-color: #6f859b; }
@@ -400,81 +388,99 @@
             margin-bottom: 6px;
         }
 
-        /* 抽屜樣式 */
+        /* ========= 全新獨立抽屜 (不侷限在大賞燈內) ========= */
+        /* 觸發區 - 改為固定在主畫面右側邊緣 */
         .drawer-trigger-area {
-            position: absolute;
+            position: fixed;
             right: 0;
-            top: 0;
-            width: 28px;
-            height: 100%;
-            background: transparent;
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: all;
-            cursor: pointer;
-        }
-
-        .drawer-arrow {
-            width: 20px;
-            height: 50px;
-            background: rgba(27, 59, 75, 0.25);
-            backdrop-filter: blur(1px);
-            border: 2px solid rgba(59, 122, 153, 0.3);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 90px;
+            background: rgba(27, 59, 75, 0.6);
+            backdrop-filter: blur(4px);
+            border: 2px solid #2e7a9a;
             border-right: none;
             border-radius: 30px 0 0 30px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: rgba(200, 235, 255, 0.3);
-            font-size: 16px;
+            z-index: 2000;
+            cursor: pointer;
+            box-shadow: -2px 4px 0 #0e202b;
+            transition: all 0.15s;
+        }
+        .drawer-trigger-area:active {
+            transform: translateY(-50%) translateX(-2px);
+            box-shadow: 0 2px 0 #0e202b;
+        }
+        .drawer-arrow {
+            color: #d0f0ff;
+            font-size: 24px;
             font-weight: bold;
-            transition: all 0.2s ease;
-            pointer-events: none;
+            text-shadow: 0 2px 2px #000;
         }
 
+        /* 抽屜本體 - 獨立於主機台之外，固定在右側 */
         .slide-drawer {
-            position: absolute;
-            right: -220px;
+            position: fixed;
+            right: -300px;          /* 完全隱藏時不可見 */
             top: 12px;
-            width: 200px;
+            bottom: 12px;
+            width: 280px;
             background: #1b2633;
             border: 2px solid #2e6a88;
-            border-radius: 20px 0 0 20px;
-            box-shadow: -4px 6px 0 #0e202b, 0 6px 12px #000;
-            z-index: 250;
-            transition: right 0.25s ease-out;
+            border-radius: 24px 0 0 24px;
+            box-shadow: -6px 8px 0 #0e202b, 0 10px 20px #000;
+            z-index: 2500;
+            transition: right 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1);
             pointer-events: all;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .slide-drawer.open { right: 0; }
 
         .drawer-header {
             background: #1f3e50;
-            padding: 8px 10px;
+            padding: 14px 12px;
             border-bottom: 2px solid #2e7a9a;
             display: flex;
             align-items: center;
             justify-content: space-between;
             color: #d0f0ff;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 14px;
+            flex-shrink: 0;
         }
 
         .drawer-content {
-            padding: 10px;
+            padding: 16px 12px;
+            background: #14222e;
+            overflow-y: auto;
+            flex: 1;
+            scrollbar-width: thin;
+            scrollbar-color: #2e6a88 #14222e;
+        }
+        .drawer-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        .drawer-content::-webkit-scrollbar-track {
             background: #14222e;
         }
+        .drawer-content::-webkit-scrollbar-thumb {
+            background: #2e6a88;
+            border-radius: 10px;
+        }
 
-        /* PiP 滑軌開關 */
+        /* PiP 滑軌開關 (保留) */
         .pip-section {
             background: #1a3342;
             border: 2px solid #2e7a9a;
             border-radius: 16px;
             padding: 15px 10px;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .pip-title {
@@ -486,7 +492,6 @@
             letter-spacing: 1px;
         }
 
-        /* 滑軌容器 */
         .pip-slider-container {
             display: flex;
             align-items: center;
@@ -500,7 +505,6 @@
             min-width: 45px;
         }
 
-        /* 滑軌本體 */
         .pip-slider-track {
             flex: 1;
             height: 24px;
@@ -512,7 +516,6 @@
             box-shadow: inset 0 2px 5px #000;
         }
 
-        /* 滑動圓點 */
         .pip-slider-thumb {
             width: 34px;
             height: 34px;
@@ -532,7 +535,6 @@
             border: 2px solid #eed685;
         }
 
-        /* 滑軌狀態文字 */
         .pip-slider-status {
             text-align: center;
             margin-top: 10px;
@@ -544,7 +546,6 @@
             font-weight: bold;
         }
 
-        /* VIVO 手機專用提示 */
         .vivo-tip {
             color: #ffaa00;
             font-size: 10px;
@@ -556,53 +557,187 @@
             border: 1px solid #ffaa00;
             display: none;
         }
-        .vivo-tip.show {
+        .vivo-tip.show { display: block; }
+
+        /* 抽屜內新樣式：機台名稱／保留時間／收藏／捷徑 */
+        .drawer-block {
+            background: #1d3342;
+            border: 1px solid #2e6078;
+            border-radius: 16px;
+            padding: 14px 12px;
+            margin-bottom: 18px;
+        }
+        .drawer-block-title {
+            color: #f5e37a;
+            font-size: 13px;
+            font-weight: bold;
+            border-bottom: 1px dashed #2e7a9a;
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .machine-name-rate {
+            display: flex;
+            justify-content: space-between;
+            background: #10202b;
+            border-radius: 30px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            border: 1px solid #2e7a9a;
+        }
+        .machine-name-rate span:first-child {
+            color: #b0e0ff;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .machine-name-rate span:last-child {
+            color: #f5e37a;
+            font-family: 'DSEG7 Classic', monospace;
+            font-size: 16px;
+        }
+        .retain-time {
+            background: #102834;
+            border-radius: 20px;
+            padding: 10px 12px;
+            text-align: center;
+            color: #c5e2f0;
+            font-size: 12px;
+            border: 1px solid #2e7a9a;
+            margin-bottom: 15px;
+        }
+        .retain-time .value {
+            color: #f5e37a;
+            font-size: 22px;
+            font-family: 'DSEG7 Classic', monospace;
             display: block;
         }
+        .machine-data-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            background: #0e1f2c;
+            padding: 8px 12px;
+            border-radius: 16px;
+            margin: 8px 0;
+            color: #b8d8e8;
+            border: 1px solid #2e5f78;
+        }
+        .machine-data-row span:last-child {
+            color: #f5e37a;
+            font-family: 'DSEG7 Classic', monospace;
+        }
+        .strategy-preview {
+            background: #0c1c28;
+            padding: 10px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #b8d8e8;
+            border: 1px dashed #3e809c;
+            margin: 10px 0;
+        }
+        .fav-star {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #1a3342;
+            border-radius: 30px;
+            padding: 10px 14px;
+            margin: 15px 0 10px;
+            border: 1px solid #d4af37;
+        }
+        .fav-star .star {
+            color: gold;
+            font-size: 18px;
+        }
+        .quick-jump-section p {
+            color: #8fcae0;
+            font-size: 11px;
+            margin: 14px 0 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .jump-badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .jump-badge {
+            background: #244a5a;
+            border: 1px solid #4f93b0;
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #dcf0f5;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 0 #0a1f2a;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .jump-badge:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+        .jump-badge.fav { background: #5f4a2c; border-color: #e5c87b; color: #ffefc0; }
+        .jump-badge.reserved { background: #6f4f3a; border-color: #d59b6b; }
 
-        .drawer-item {
+        .drawer-item-old {
             background: #1d3342;
             border: 1px solid #2e6078;
             border-radius: 12px;
-            padding: 8px 6px;
-            margin-bottom: 8px;
+            padding: 10px 8px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
-
         .drawer-item-value {
             margin-left: auto;
             background: #003d55;
-            padding: 2px 6px;
+            padding: 3px 8px;
             border-radius: 20px;
-            font-size: 9px;
+            font-size: 11px;
             font-family: 'DSEG7 Classic', monospace;
             color: #f5e37a;
+        }
+
+        /* 遮罩層 (點擊外部關閉抽屜) */
+        .drawer-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2200;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+        .drawer-overlay.active {
+            opacity: 1;
+            pointer-events: all;
         }
     </style>
 </head>
 <body>
+    <!-- 狀態訊息 -->
     <div class="status-message" id="statusMessage"></div>
 
-    <!-- 主機台 -->
+    <!-- 抽屜遮罩 (獨立控制) -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- 主機台 (內容完全不動, 但原本dataArea內的抽屜trigger與抽屜將移出) -->
     <div id="playMainArea">
-        <!-- 大賞燈區 -->
+        <!-- 大賞燈區 (完全移除原本的抽屜相關元素) -->
         <div id="dataArea">
             <div class="prize-light-container-special" id="prizeLightContainer">
                 <div class="prizeLightPages" id="prizeLightPages">
                     <div class="prizeLightPage" data-page="0">
-                        <div class="pageHeader">
-                            <div class="dataTabs">
-                                <div class="dataTab active" data-type="spins">轉數</div>
-                                <div class="dataTab" data-type="bb">BB</div>
-                                <div class="dataTab" data-type="rb">RB</div>
-                            </div>
-                        </div>
+                        <div class="pageHeader"><div class="dataTabs"><div class="dataTab active" data-type="spins">轉數</div><div class="dataTab" data-type="bb">BB</div><div class="dataTab" data-type="rb">RB</div></div></div>
                         <div class="pageContent">
-                            <div class="blockChartWrapper">
-                                <div class="blockChartBars" id="blockChartBars"></div>
-                            </div>
+                            <div class="blockChartWrapper"><div class="blockChartBars" id="blockChartBars"></div></div>
                             <div class="dataPanel">
                                 <div class="dataCard dataCard-total"><div class="dataCardHeader">總轉數</div><div class="dataCardValue" id="totalSpinsValue">12,589</div></div>
                                 <div class="dataCard dataCard-bb"><div class="dataCardHeader">BB次數</div><div class="dataCardValue" id="bbCountValue">156</div></div>
@@ -610,95 +745,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="prizeLightPage" data-page="1">
-                        <div class="pageHeader"><div class="dataTabs"><div class="dataTab active">機台履歷</div></div></div>
-                        <div class="history-strategy-content" style="overflow-y:auto; padding:4px;">
-                            <div class="history-strategy-list" id="machineHistoryList"></div>
-                        </div>
-                    </div>
-                    <div class="prizeLightPage" data-page="2">
-                        <div class="pageHeader"><div class="dataTabs"><div class="dataTab active">機台攻略</div></div></div>
-                        <div class="history-strategy-content" style="overflow-y:auto; padding:4px;">
-                            <div class="history-strategy-list" id="machineStrategyList"></div>
-                        </div>
-                    </div>
+                    <div class="prizeLightPage" data-page="1"><div class="pageHeader"><div class="dataTabs"><div class="dataTab active">機台履歷</div></div></div><div class="history-strategy-content" style="overflow-y:auto; padding:4px;"><div class="history-strategy-list" id="machineHistoryList"></div></div></div>
+                    <div class="prizeLightPage" data-page="2"><div class="pageHeader"><div class="dataTabs"><div class="dataTab active">機台攻略</div></div></div><div class="history-strategy-content" style="overflow-y:auto; padding:4px;"><div class="history-strategy-list" id="machineStrategyList"></div></div></div>
                 </div>
-                
                 <div class="prize-light-touch-zone" id="prizeLightTouchZone"><div class="touch-indicator"></div></div>
                 <div class="prize-light-navigation" id="prizeLightNavigation">
                     <button class="cyber-arrow" id="prevPrizeLightPage">◀</button>
-                    <div class="cyber-dots" id="prizeLightDots">
-                        <div class="cyber-dot active" data-index="0"></div>
-                        <div class="cyber-dot" data-index="1"></div>
-                        <div class="cyber-dot" data-index="2"></div>
-                    </div>
+                    <div class="cyber-dots" id="prizeLightDots"><div class="cyber-dot active" data-index="0"></div><div class="cyber-dot" data-index="1"></div><div class="cyber-dot" data-index="2"></div></div>
                     <button class="cyber-arrow" id="nextPrizeLightPage">▶</button>
                 </div>
-
-                <!-- 抽屜 - 滑軌開關 -->
-                <div class="drawer-trigger-area" id="drawerTriggerArea">
-                    <div class="drawer-arrow" id="drawerArrow">◀</div>
-                </div>
-                <div class="slide-drawer" id="slideDrawer">
-                    <div class="drawer-header">
-                        <span>⚙️ 工具抽屜</span>
-                        <button id="drawerCloseBtn" style="background:transparent; border:none; color:#8fcae0; font-size:16px;">✕</button>
-                    </div>
-                    <div class="drawer-content">
-                        <!-- PiP 滑軌開關 -->
-                        <div class="pip-section">
-                            <div class="pip-title">📺 子母視訊畫面</div>
-                            
-                            <!-- 滑軌開關 -->
-                            <div class="pip-slider-container">
-                                <span class="pip-slider-label">關</span>
-                                <div class="pip-slider-track" id="pipSliderTrack">
-                                    <div class="pip-slider-thumb" id="pipSliderThumb">◉</div>
-                                </div>
-                                <span class="pip-slider-label">開</span>
-                            </div>
-                            
-                            <!-- 狀態顯示 -->
-                            <div class="pip-slider-status" id="pipStatus">
-                                子母畫面關閉
-                            </div>
-                            
-                            <!-- VIVO 手機專用提示 (初始隱藏) -->
-                            <div class="vivo-tip" id="vivoTip">
-                                📱 VIVO手機請依指示操作：<br>
-                                1. 點影片右下角「全螢幕」<br>
-                                2. 按手機「Home鍵」返回桌面
-                            </div>
-                        </div>
-
-                        <!-- 原本的抽屜內容 -->
-                        <div class="drawer-item">
-                            <div class="drawer-item-icon">🎰</div>
-                            <div class="drawer-item-text">機台編號</div>
-                            <div class="drawer-item-value">#01</div>
-                        </div>
-                        <div class="drawer-item">
-                            <div class="drawer-item-icon">💎</div>
-                            <div class="drawer-item-text">庫存代幣</div>
-                            <div class="drawer-item-value" id="drawerMedal">20</div>
-                        </div>
-                    </div>
-                </div>
+                <!-- 原本抽屜trigger area 被移除了！ -->
             </div>
         </div>
 
-        <!-- 單一視訊轉軸區 - 正常直立顯示的影片 -->
+        <!-- 單一視訊轉軸區 -->
         <div id="content">
             <div class="reel-container">
                 <div class="single-reel">
-                    <!-- 影片元素：直立顯示，無旋轉偏移，填滿容器 -->
-                    <video data-v-396f44c9="" id="remotePlayer" 
-                           width="100%" height="100%" 
-                           playsinline="" webkit-playsinline="" 
-                           class="absolute inset-0 w-full h-full object-contain bg-transparent"
-                           style="padding-right: 0px;" 
-                           autoplay loop muted></video>
-                    <!-- 視覺占位符 -->
+                    <video data-v-396f44c9="" id="remotePlayer" width="100%" height="100%" playsinline="" webkit-playsinline="" class="absolute inset-0 w-full h-full object-contain bg-transparent" style="padding-right: 0px;" autoplay loop muted></video>
                     <div class="video-placeholder">🎰 轉軸視訊 · 自動PiP</div>
                 </div>
             </div>
@@ -707,31 +771,19 @@
         <!-- 頂部面板 -->
         <div id="panelTop" class="control-panel">
             <div style="display: flex; align-items: center; height:100%; padding:0 4px;">
-                <div style="width:18%;">
-                    <button id="maxBet" class="game-btn btn-red" style="width:100%; height:34px;">MAX</button>
-                </div>
+                <div style="width:18%;"><button id="maxBet" class="game-btn btn-red" style="width:100%; height:34px;">MAX</button></div>
                 <div style="width:60%; display: flex; justify-content: space-around;">
-                    <dl>
-                        <dt>BB Point</dt>
-                        <dd id="bbPoint">8,984,002pt</dd>
-                    </dl>
-                    <dl>
-                        <dt>Medal</dt>
-                        <dd id="medalNum">20Coin</dd>
-                    </dl>
+                    <dl><dt>BB Point</dt><dd id="bbPoint">8,984,002pt</dd></dl>
+                    <dl><dt>Medal</dt><dd id="medalNum">20Coin</dd></dl>
                 </div>
-                <div style="width:18%;">
-                    <button id="purchaseMedal" class="game-btn btn-red" style="width:100%; height:34px;">BUY</button>
-                </div>
+                <div style="width:18%;"><button id="purchaseMedal" class="game-btn btn-red" style="width:100%; height:34px;">BUY</button></div>
             </div>
         </div>
 
         <!-- 底部面板 -->
         <div id="panelBottom" class="control-panel">
             <div style="display:flex; align-items:center; justify-content:flex-start; height:100%; padding:0 6px;">
-                <div style="display:flex; justify-content:center; position:relative; left:25px;">
-                    <button class="joystick" id="lever"></button>
-                </div>
+                <div style="display:flex; justify-content:center; position:relative; left:25px;"><button class="joystick" id="lever"></button></div>
                 <div style="display:flex; justify-content:center; gap:32px; margin-left:70px;">
                     <button class="stop-btn" id="btnStopL">⏹</button>
                     <button class="stop-btn" id="btnStopC">⏹</button>
@@ -751,6 +803,106 @@
         </div>
     </div>
 
+    <!-- ========= 獨立抽屜 trigger (固定於畫面右側) ========= -->
+    <div class="drawer-trigger-area" id="drawerTriggerArea">
+        <div class="drawer-arrow" id="drawerArrow">◀</div>
+    </div>
+
+    <!-- ========= 獨立抽屜本體 (內容完全從原抽屜移植並強化) ========= -->
+    <div class="slide-drawer" id="slideDrawer">
+        <div class="drawer-header">
+            <span>⚙️ 完整工具抽屜</span>
+            <button id="drawerCloseBtn" style="background:transparent; border:none; color:#8fcae0; font-size:18px;">✕</button>
+        </div>
+        <div class="drawer-content">
+            <!-- 1. 機台名字＋比率 -->
+            <div class="drawer-block">
+                <div class="drawer-block-title">🎰 機台名稱 · 比率</div>
+                <div class="machine-name-rate">
+                    <span>PACHINKO-Ω</span>
+                    <span>98.6%</span>
+                </div>
+            </div>
+
+            <!-- 2. 可保留時間 -->
+            <div class="drawer-block">
+                <div class="drawer-block-title">⏳ 可保留時間</div>
+                <div class="retain-time">
+                    <span class="value">14:32</span>
+                    <span>（剩餘保留額度）</span>
+                </div>
+            </div>
+
+            <!-- 3. 機台資料 -->
+            <div class="drawer-block">
+                <div class="drawer-block-title">📊 機台資料</div>
+                <div class="machine-data-row"><span>總投注</span><span>1,258,000</span></div>
+                <div class="machine-data-row"><span>最大BB</span><span>2,400</span></div>
+                <div class="machine-data-row"><span>最終遊玩</span><span>10分鐘前</span></div>
+            </div>
+
+            <!-- 4. 機台攻略 (抽屜內快速版) -->
+            <div class="drawer-block">
+                <div class="drawer-block-title">📘 機台攻略</div>
+                <div class="strategy-preview">
+                    • 晚上9點後RB機率+12%<br>
+                    • 每千轉可期待一次大獎<br>
+                    • 保留再入場有連乘效果
+                </div>
+            </div>
+
+            <!-- 5. 收藏機台 ＋ 下方捷徑 -->
+            <div class="drawer-block">
+                <div class="drawer-block-title">⭐ 收藏機台</div>
+                <div class="fav-star">
+                    <span class="star">★</span><span>Ω 北斗神拳</span><span style="margin-left:auto;">98.2%</span>
+                </div>
+                <!-- 快速進入捷徑 遊戲中/保留中/我的最愛 -->
+                <div class="quick-jump-section">
+                    <p>🎮 遊戲中 · 快速進入</p>
+                    <div class="jump-badge-container">
+                        <div class="jump-badge" data-machine="台1">⚡台1</div>
+                        <div class="jump-badge" data-machine="台3">⚡台3</div>
+                        <div class="jump-badge" data-machine="台5">⚡台5</div>
+                    </div>
+
+                    <p style="margin-top:12px;">💤 保留中 · 快速進入</p>
+                    <div class="jump-badge-container">
+                        <div class="jump-badge reserved" data-machine="保留A">⏰台2</div>
+                        <div class="jump-badge reserved" data-machine="保留C">⏰台7</div>
+                    </div>
+
+                    <p style="margin-top:12px;">❤️ 我的最愛 · 快速進入</p>
+                    <div class="jump-badge-container">
+                        <div class="jump-badge fav" data-machine="最愛1">⭐台4</div>
+                        <div class="jump-badge fav" data-machine="最愛2">⭐台8</div>
+                        <div class="jump-badge fav" data-machine="最愛3">⭐台9</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 保留原始的PiP滑軌開關以及一些舊元件 -->
+            <div class="pip-section">
+                <div class="pip-title">📺 子母視訊畫面</div>
+                <div class="pip-slider-container">
+                    <span class="pip-slider-label">關</span>
+                    <div class="pip-slider-track" id="pipSliderTrack"><div class="pip-slider-thumb" id="pipSliderThumb">◉</div></div>
+                    <span class="pip-slider-label">開</span>
+                </div>
+                <div class="pip-slider-status" id="pipStatus">子母畫面關閉</div>
+                <div class="vivo-tip" id="vivoTip">📱 VIVO手機請依指示操作：<br>1. 點影片右下角「全螢幕」<br>2. 按手機「Home鍵」返回桌面</div>
+            </div>
+
+            <!-- 保留原始抽屜元件（機台編號、庫存代幣） -->
+            <div class="drawer-item-old">
+                <div class="drawer-item-icon">🎰</div><div class="drawer-item-text">機台編號</div><div class="drawer-item-value">#01</div>
+            </div>
+            <div class="drawer-item-old">
+                <div class="drawer-item-icon">💎</div><div class="drawer-item-text">庫存代幣</div><div class="drawer-item-value" id="drawerMedal">20</div>
+            </div>
+        </div>
+    </div>
+
     <script>
         (function() {
             const statusMsg = document.getElementById('statusMessage');
@@ -763,74 +915,22 @@
                 setTimeout(() => statusMsg.classList.remove('show'), 2500);
             }
 
-            // 偵測是否為 VIVO 手機
             function isVivoPhone() {
                 const ua = navigator.userAgent.toLowerCase();
-                return ua.includes('vivo') || ua.includes('bbk') || ua.includes('funtouch') || 
-                       ua.includes('iqoo') || ua.includes('1831'); // VIVO 常見的型號標記
+                return ua.includes('vivo') || ua.includes('bbk') || ua.includes('funtouch') || ua.includes('iqoo') || ua.includes('1831');
             }
+            if (isVivoPhone()) vivoTip.classList.add('show');
 
-            // 如果是 VIVO 手機，顯示提示
-            if (isVivoPhone()) {
-                vivoTip.classList.add('show');
-                console.log('偵測到 VIVO 手機，啟用專用 PiP 提示');
-            }
-
-            // 獲取視訊元素
+            // 視訊
             const mainVideo = document.getElementById('remotePlayer');
-
-            // 模擬視訊串流
             function createMockVideo() {
-                const canvas = document.createElement('canvas');
-                canvas.width = 360;
-                canvas.height = 640;
-                const ctx = canvas.getContext('2d');
-                
-                let frame = 0;
-                const stream = canvas.captureStream(30);
-                
-                setInterval(() => {
-                    ctx.fillStyle = '#1b2633';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    
-                    const symbols = ['7', '🍒', '⭐', '🍋', '🔔', '7', '🍒'];
-                    const symbol = symbols[Math.floor(frame / 10) % symbols.length];
-                    
-                    ctx.font = 'bold 200px Arial';
-                    ctx.fillStyle = '#c0e2f0';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(symbol, canvas.width/2, canvas.height/2);
-                    
-                    ctx.strokeStyle = '#3d5c70';
-                    ctx.lineWidth = 8;
-                    ctx.strokeRect(4, 4, canvas.width-8, canvas.height-8);
-                    
-                    ctx.font = 'bold 40px Arial';
-                    ctx.fillStyle = '#2a4050';
-                    ctx.globalAlpha = 0.3;
-                    ctx.fillText('AUTO PIP', canvas.width/2, canvas.height-80);
-                    ctx.globalAlpha = 1;
-                    
-                    frame++;
-                }, 100);
-                
-                return stream;
+                const canvas = document.createElement('canvas'); canvas.width = 360; canvas.height = 640; const ctx = canvas.getContext('2d'); let frame = 0; const stream = canvas.captureStream(30); 
+                setInterval(() => { ctx.fillStyle = '#1b2633'; ctx.fillRect(0,0,canvas.width,canvas.height); const symbols = ['7','🍒','⭐','🍋','🔔','7','🍒']; const symbol = symbols[Math.floor(frame/10)%symbols.length]; ctx.font = 'bold 200px Arial'; ctx.fillStyle = '#c0e2f0'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(symbol, canvas.width/2, canvas.height/2); ctx.strokeStyle='#3d5c70'; ctx.lineWidth=8; ctx.strokeRect(4,4,canvas.width-8,canvas.height-8); ctx.font='bold 40px Arial'; ctx.fillStyle='#2a4050'; ctx.globalAlpha=0.3; ctx.fillText('AUTO PIP',canvas.width/2,canvas.height-80); ctx.globalAlpha=1; frame++; },100); return stream;
             }
-
-            // 設定視訊串流
-            const stream = createMockVideo();
-            mainVideo.srcObject = stream;
+            const stream = createMockVideo(); mainVideo.srcObject = stream;
 
             // 遊戲狀態
-            let currentMachine = { 
-                totalSpins: 12589, 
-                bbCount: 156, 
-                rbCount: 289, 
-                medalCount: 20, 
-                bbPoint: 8984002 
-            };
-            
+            let currentMachine = { totalSpins: 12589, bbCount: 156, rbCount: 289, medalCount: 20, bbPoint: 8984002 };
             function updateDisplay() {
                 document.getElementById('totalSpinsValue').innerText = currentMachine.totalSpins.toLocaleString();
                 document.getElementById('bbCountValue').innerText = currentMachine.bbCount;
@@ -841,295 +941,101 @@
             }
             updateDisplay();
 
-            // 滾輪邏輯
-            let rolling = false;
-            let autoMode = false;
-            let autoInterval = null;
-
+            let rolling = false, autoMode = false, autoInterval = null;
             function spinOnce() {
-                if (currentMachine.medalCount <= 0) { 
-                    showMessage('代幣不足','error');
-                    if (autoMode) stopAutoMode();
-                    return false;
-                }
-                currentMachine.medalCount--;
-                currentMachine.totalSpins++;
-                updateDisplay();
-                
-                mainVideo.play().catch(e => {});
-                
-                rolling = true;
-                showMessage('滾輪轉動中');
-                return true;
+                if (currentMachine.medalCount <= 0) { showMessage('代幣不足','error'); if(autoMode) stopAutoMode(); return false; }
+                currentMachine.medalCount--; currentMachine.totalSpins++; updateDisplay();
+                mainVideo.play().catch(e=>{}); rolling = true; showMessage('滾輪轉動中'); return true;
             }
+            function stopAutoMode() { autoMode = false; document.getElementById('btnAuto').classList.remove('btn-green'); document.getElementById('btnAuto').innerText = '自動'; if(autoInterval) { clearInterval(autoInterval); autoInterval = null; } }
+            document.getElementById('lever').addEventListener('click', ()=>{ if(autoMode) { showMessage('請先關閉自動模式','error'); return; } spinOnce(); });
+            ['btnStopL','btnStopC','btnStopR'].forEach((id,i)=> document.getElementById(id).addEventListener('click', ()=>{ if(!rolling || autoMode) return; rolling=false; showMessage(`第${i+1}輪停止 (單一視訊模式)`); }));
 
-            function stopAutoMode() {
-                autoMode = false;
-                document.getElementById('btnAuto').classList.remove('btn-green');
-                document.getElementById('btnAuto').innerText = '自動';
-                if (autoInterval) {
-                    clearInterval(autoInterval);
-                    autoInterval = null;
-                }
-            }
-
-            // 搖桿
-            document.getElementById('lever').addEventListener('click', ()=>{
-                if (autoMode) {
-                    showMessage('請先關閉自動模式','error');
-                    return;
-                }
-                spinOnce();
-            });
-
-            // 停止按鈕
-            const stops = ['btnStopL','btnStopC','btnStopR'].map(id => document.getElementById(id));
-            stops.forEach((btn, i) => {
-                btn.addEventListener('click', ()=>{
-                    if (!rolling || autoMode) return;
-                    rolling = false;
-                    showMessage(`第${i+1}輪停止 (單一視訊模式)`);
-                });
-            });
-
-            // ===== PiP 滑軌開關（VIVO 相容版）=====
+            // PiP 滑軌
             const sliderTrack = document.getElementById('pipSliderTrack');
             const sliderThumb = document.getElementById('pipSliderThumb');
             const pipStatus = document.getElementById('pipStatus');
-            
             let pipEnabled = false;
-
             function updateSliderPosition() {
-                if (pipEnabled) {
-                    sliderThumb.style.left = 'calc(100% - 34px)';
-                    pipStatus.innerHTML = '子母畫面啟用中';
-                    pipStatus.classList.add('active');
-                    document.body.classList.add('pip-active');
-                } else {
-                    sliderThumb.style.left = '-2px';
-                    pipStatus.innerHTML = '子母畫面關閉';
-                    pipStatus.classList.remove('active');
-                    document.body.classList.remove('pip-active');
-                }
+                if (pipEnabled) { sliderThumb.style.left = 'calc(100% - 34px)'; pipStatus.innerHTML = '子母畫面啟用中'; pipStatus.classList.add('active'); document.body.classList.add('pip-active'); } 
+                else { sliderThumb.style.left = '-2px'; pipStatus.innerHTML = '子母畫面關閉'; pipStatus.classList.remove('active'); document.body.classList.remove('pip-active'); }
             }
-
-            // VIVO 專用的 PiP 啟動方式
             async function enterPiPVivo() {
-                try {
-                    // 顯示 VIVO 專用提示
-                    showMessage('VIVO手機：請全螢幕後按Home鍵', 'info');
-                    
-                    // 嘗試自動進入全螢幕
-                    if (mainVideo.requestFullscreen) {
-                        await mainVideo.requestFullscreen();
-                    } else if (mainVideo.webkitRequestFullscreen) {
-                        await mainVideo.webkitRequestFullscreen();
-                    }
-                    
-                    // 監聽全螢幕變化
-                    function onFullscreenChange() {
-                        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                            // 假設使用者按了 Home 鍵
-                            setTimeout(() => {
-                                pipEnabled = true;
-                                updateSliderPosition();
-                                showMessage('子母畫面已透過系統啟動', 'success');
-                            }, 500);
-                            
-                            document.removeEventListener('fullscreenchange', onFullscreenChange);
-                            document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
-                        }
-                    }
-                    
-                    document.addEventListener('fullscreenchange', onFullscreenChange);
-                    document.addEventListener('webkitfullscreenchange', onFullscreenChange);
-                    
-                    // 3秒後提醒
-                    setTimeout(() => {
-                        if (document.fullscreenElement || document.webkitFullscreenElement) {
-                            showMessage('請按手機Home鍵返回桌面', 'info');
-                        }
-                    }, 3000);
-                    
-                } catch (err) {
-                    console.log('VIVO PiP 引導失敗:', err);
-                    showMessage('請手動操作：全螢幕影片後按Home鍵', 'error');
-                }
+                try { showMessage('VIVO手機：請全螢幕後按Home鍵', 'info');
+                    if (mainVideo.requestFullscreen) await mainVideo.requestFullscreen(); else if (mainVideo.webkitRequestFullscreen) await mainVideo.webkitRequestFullscreen();
+                    function onFullscreenChange() { if (!document.fullscreenElement && !document.webkitFullscreenElement) { setTimeout(() => { pipEnabled = true; updateSliderPosition(); showMessage('子母畫面已透過系統啟動', 'success'); }, 500); document.removeEventListener('fullscreenchange', onFullscreenChange); document.removeEventListener('webkitfullscreenchange', onFullscreenChange); } }
+                    document.addEventListener('fullscreenchange', onFullscreenChange); document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+                    setTimeout(() => { if (document.fullscreenElement || document.webkitFullscreenElement) showMessage('請按手機Home鍵返回桌面', 'info'); }, 3000);
+                } catch (err) { showMessage('請手動操作：全螢幕影片後按Home鍵', 'error'); }
             }
-
-            // 標準 PiP 啟動方式
             async function enterPiPStandard() {
-                try {
-                    if (mainVideo.webkitSupportsPresentationMode && 
-                        mainVideo.webkitSupportsPresentationMode('picture-in-picture')) {
-                        
-                        await mainVideo.webkitSetPresentationMode('picture-in-picture');
-                        pipEnabled = true;
-                        updateSliderPosition();
-                        showMessage('子母畫面已啟動', 'success');
-                        return true;
-                    }
-                    return false;
-                } catch (err) {
-                    console.log('標準 PiP 失敗:', err);
-                    return false;
-                }
+                try { if (mainVideo.webkitSupportsPresentationMode && mainVideo.webkitSupportsPresentationMode('picture-in-picture')) { await mainVideo.webkitSetPresentationMode('picture-in-picture'); pipEnabled = true; updateSliderPosition(); showMessage('子母畫面已啟動','success'); return true; } return false; } catch (err) { return false; }
             }
+            async function enterPiP() { if (isVivoPhone()) { await enterPiPVivo(); } else { const success = await enterPiPStandard(); if (!success) showMessage('您的裝置不支援自動PiP','error'); } }
+            function exitPiP() { if (mainVideo.webkitPresentationMode === 'picture-in-picture') mainVideo.webkitSetPresentationMode('inline'); pipEnabled = false; updateSliderPosition(); showMessage('已退出子母畫面'); }
+            mainVideo.addEventListener('webkitpresentationmodechanged', ()=> { const active = (mainVideo.webkitPresentationMode === 'picture-in-picture'); if (active !== pipEnabled) { pipEnabled = active; updateSliderPosition(); } });
+            sliderTrack.addEventListener('click', (e) => { const rect = sliderTrack.getBoundingClientRect(); const clickX = e.clientX - rect.left; const midPoint = rect.width/2; if (clickX > midPoint) { if (!pipEnabled) enterPiP(); } else { if (pipEnabled) exitPiP(); } });
 
-            // 統一的 PiP 啟動函數
-            async function enterPiP() {
-                // 如果是 VIVO 手機，優先使用 VIVO 專用方式
-                if (isVivoPhone()) {
-                    await enterPiPVivo();
-                } else {
-                    // 非 VIVO 手機嘗試標準方式
-                    const success = await enterPiPStandard();
-                    if (!success) {
-                        showMessage('您的裝置不支援自動PiP', 'error');
-                    }
-                }
-            }
+            document.getElementById('btnAuto').addEventListener('click', ()=>{ if (autoMode) { stopAutoMode(); showMessage('自動模式關閉'); } else { autoMode = true; document.getElementById('btnAuto').classList.add('btn-green'); document.getElementById('btnAuto').innerText = '自動中'; showMessage('自動模式啟動','success'); if (!pipEnabled) setTimeout(()=>enterPiP(),500); if (!rolling) spinOnce(); if (autoInterval) clearInterval(autoInterval); autoInterval = setInterval(()=>{ if (!autoMode) return; spinOnce(); },3000); } });
 
-            function exitPiP() {
-                if (mainVideo.webkitPresentationMode === 'picture-in-picture') {
-                    mainVideo.webkitSetPresentationMode('inline');
-                }
-                pipEnabled = false;
-                updateSliderPosition();
-                showMessage('已退出子母畫面');
-            }
-
-            // 監聽 PiP 狀態變化
-            mainVideo.addEventListener('webkitpresentationmodechanged', () => {
-                const active = (mainVideo.webkitPresentationMode === 'picture-in-picture');
-                if (active !== pipEnabled) {
-                    pipEnabled = active;
-                    updateSliderPosition();
-                }
-            });
-
-            // 滑軌點擊事件
-            sliderTrack.addEventListener('click', (e) => {
-                const rect = sliderTrack.getBoundingClientRect();
-                const clickX = e.clientX - rect.left;
-                const midPoint = rect.width / 2;
-                
-                if (clickX > midPoint) {
-                    if (!pipEnabled) {
-                        enterPiP();
-                    }
-                } else {
-                    if (pipEnabled) exitPiP();
-                }
-            });
-
-            // 自動按鈕
-            document.getElementById('btnAuto').addEventListener('click', ()=>{
-                if (autoMode) {
-                    stopAutoMode();
-                    showMessage('自動模式關閉');
-                } else {
-                    autoMode = true;
-                    document.getElementById('btnAuto').classList.add('btn-green');
-                    document.getElementById('btnAuto').innerText = '自動中';
-                    showMessage('自動模式啟動', 'success');
-                    
-                    // 自動開啟 PiP
-                    if (!pipEnabled) {
-                        setTimeout(() => enterPiP(), 500);
-                    }
-                    
-                    if (!rolling) spinOnce();
-                    
-                    if (autoInterval) clearInterval(autoInterval);
-                    autoInterval = setInterval(() => {
-                        if (!autoMode) return;
-                        spinOnce();
-                    }, 3000);
-                }
-            });
-
-            // 購買代幣
-            document.getElementById('purchaseMedal').addEventListener('click', ()=>{
-                if (currentMachine.bbPoint >= 50) {
-                    currentMachine.bbPoint -= 50;
-                    currentMachine.medalCount += 50;
-                    updateDisplay();
-                    showMessage('購買50代幣','success');
-                } else showMessage('BB點不足','error');
-            });
+            document.getElementById('purchaseMedal').addEventListener('click', ()=>{ if (currentMachine.bbPoint >= 50) { currentMachine.bbPoint -= 50; currentMachine.medalCount += 50; updateDisplay(); showMessage('購買50代幣','success'); } else showMessage('BB點不足','error'); });
 
             // 大賞燈導航
-            const pages = document.getElementById('prizeLightPages');
-            const dots = document.querySelectorAll('.cyber-dot');
-            const prev = document.getElementById('prevPrizeLightPage');
-            const next = document.getElementById('nextPrizeLightPage');
-            let curPage = 0;
-            
-            function setPage(p) {
-                if (p<0||p>2) return;
-                curPage = p;
-                pages.style.transform = `translateX(-${p*33.333}%)`;
-                dots.forEach((d,i)=> d.classList.toggle('active', i===p));
-                showNav();
-            }
-            
-            prev.addEventListener('click', ()=> setPage(curPage-1));
-            next.addEventListener('click', ()=> setPage(curPage+1));
-            dots.forEach(d=> d.addEventListener('click', function(){ setPage(parseInt(this.dataset.index)); }));
-
-            const nav = document.getElementById('prizeLightNavigation');
-            const zone = document.getElementById('prizeLightTouchZone');
-            let hideTimer;
-            
-            function showNav() { 
-                nav.classList.add('active'); 
-                clearTimeout(hideTimer); 
-                hideTimer = setTimeout(()=> nav.classList.remove('active'), 4000); 
-            }
-            
+            const pages = document.getElementById('prizeLightPages'); const dots = document.querySelectorAll('.cyber-dot'); const prev = document.getElementById('prevPrizeLightPage'); const next = document.getElementById('nextPrizeLightPage'); let curPage = 0;
+            function setPage(p) { if(p<0||p>2) return; curPage = p; pages.style.transform = `translateX(-${p*33.333}%)`; dots.forEach((d,i)=> d.classList.toggle('active', i===p)); showNav(); }
+            prev.addEventListener('click', ()=> setPage(curPage-1)); next.addEventListener('click', ()=> setPage(curPage+1)); dots.forEach(d=> d.addEventListener('click', function(){ setPage(parseInt(this.dataset.index)); }));
+            const nav = document.getElementById('prizeLightNavigation'); const zone = document.getElementById('prizeLightTouchZone'); let hideTimer;
+            function showNav() { nav.classList.add('active'); clearTimeout(hideTimer); hideTimer = setTimeout(()=> nav.classList.remove('active'), 4000); }
             zone.addEventListener('touchstart', showNav);
 
             // 其他按鈕
             document.getElementById('btnReserve').addEventListener('click', ()=> showMessage('保留功能'));
             document.getElementById('maxBet').addEventListener('click', ()=> showMessage('MAX BET'));
             document.getElementById('btnHome').addEventListener('click', ()=> showMessage('首頁'));
-            document.getElementById('btnBreak').addEventListener('click', ()=> { 
-                showMessage('離開'); 
-                stopAutoMode(); 
-            });
+            document.getElementById('btnBreak').addEventListener('click', ()=> { showMessage('離開'); stopAutoMode(); });
 
-            // 履歷和攻略
+            // 履歷與攻略
             document.getElementById('machineHistoryList').innerHTML = '<div style="color:#c0ddec;">· 02/15 最大獎8500</div><div style="color:#c0ddec;">· 02/12 BB連發2次</div>';
             document.getElementById('machineStrategyList').innerHTML = '<div style="color:#c0ddec;">📌 20:00後RB機率較高</div><div style="color:#c0ddec;">📌 連10沒中可略增注</div>';
 
-            // 抽屜控制
+            // ===== 獨立抽屜控制 (trigger, drawer, overlay, close) =====
             const triggerArea = document.getElementById('drawerTriggerArea');
             const drawer = document.getElementById('slideDrawer');
             const closeBtn = document.getElementById('drawerCloseBtn');
-            
-            triggerArea.addEventListener('click', (e) => { 
-                e.stopPropagation(); 
-                drawer.classList.toggle('open'); 
-            });
-            
-            closeBtn.addEventListener('click', (e) => { 
-                e.stopPropagation(); 
-                drawer.classList.remove('open'); 
-            });
-            
-            document.addEventListener('click', (e) => {
-                if (!drawer.contains(e.target) && !triggerArea.contains(e.target)) {
-                    drawer.classList.remove('open');
-                }
+            const overlay = document.getElementById('drawerOverlay');
+
+            function openDrawer() {
+                drawer.classList.add('open');
+                overlay.classList.add('active');
+            }
+            function closeDrawer() {
+                drawer.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+
+            triggerArea.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openDrawer();
             });
 
-            // 啟動視訊
-            document.addEventListener('touchstart', () => {
-                if (mainVideo.paused) {
-                    mainVideo.play().catch(e => {});
-                }
-            }, { once: true });
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeDrawer();
+            });
+
+            overlay.addEventListener('click', closeDrawer);
+
+            // 點擊快速捷徑 badge 可切換機台 (模擬)
+            document.querySelectorAll('.jump-badge').forEach(badge => {
+                badge.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const machine = badge.innerText.replace(/[⚡⏰⭐]/g,'').trim() || '未知機台';
+                    showMessage(`快速切換至 ${machine}`, 'success');
+                    closeDrawer(); // 切換後關閉抽屜
+                });
+            });
+
+            document.addEventListener('touchstart', () => { if (mainVideo.paused) mainVideo.play().catch(e=>{}); }, { once: true });
         })();
     </script>
 </body>
