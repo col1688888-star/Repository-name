@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>機台界面 · 自動PiP＋滑軌開關</title>
+    <title>機台界面 · 單一視訊轉軸＋自動PiP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg7.min.css">
     <style>
@@ -50,23 +50,25 @@
         #panelBottom { flex: 0 0 13%; min-height: 68px; }
         #commandArea { flex: 0 0 8%; min-height: 48px; }
 
-        /* ----- 視訊轉軸區 ----- */
+        /* ----- 單一視訊轉軸區 ----- */
         .reel-container {
             width: 100%;
             height: 100%;
-            display: flex;
-            gap: 6px;
             background: #0d121b;
             border-radius: 28px;
             border: 1px solid #2f4457;
             padding: 6px;
             box-shadow: inset 0 3px 6px #00000080, 0 4px 0 #0f1a22;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .reel {
-            flex: 1;
+        .single-reel {
+            width: 100%;
+            height: 100%;
             background: #1b2633;
-            border-radius: 16px;
+            border-radius: 20px;
             border: 1px solid #3d5c70;
             overflow: hidden;
             position: relative;
@@ -78,7 +80,7 @@
         .reel-video {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;  /* 確保影片完整顯示在框內 */
             background: #1b2633;
         }
 
@@ -92,7 +94,7 @@
             align-items: center;
             justify-content: center;
             color: rgba(255, 255, 255, 0.8);
-            font-size: 12px;
+            font-size: 16px;
             font-weight: bold;
             text-shadow: 0 2px 4px #000;
             background: rgba(0,0,0,0.3);
@@ -291,7 +293,7 @@
         }
         .btn-red { background: #be3e62; border-color: #d4668a; }
         
-        /* 保留按鈕 - 改回原本的琥珀色 */
+        /* 保留按鈕 - 琥珀色 */
         .btn-amber { 
             background: #c47c34; 
             border-color: #efb36e; 
@@ -656,26 +658,14 @@
             </div>
         </div>
 
-        <!-- 視訊轉軸區 -->
+        <!-- 單一視訊轉軸區 -->
         <div id="content">
             <div class="reel-container">
-                <div class="reel" id="reelL">
-                    <video class="reel-video" id="videoL" autoplay loop muted playsinline webkit-playsinline>
+                <div class="single-reel">
+                    <video class="reel-video" id="mainVideo" autoplay loop muted playsinline webkit-playsinline>
                         <source src="#" type="video/mp4">
                     </video>
-                    <div class="video-placeholder">🎰 左輪</div>
-                </div>
-                <div class="reel" id="reelC">
-                    <video class="reel-video" id="videoC" autoplay loop muted playsinline webkit-playsinline>
-                        <source src="#" type="video/mp4">
-                    </video>
-                    <div class="video-placeholder">🎰 中輪</div>
-                </div>
-                <div class="reel" id="reelR">
-                    <video class="reel-video" id="videoR" autoplay loop muted playsinline webkit-playsinline>
-                        <source src="#" type="video/mp4">
-                    </video>
-                    <div class="video-placeholder">🎰 右輪</div>
+                    <div class="video-placeholder">🎰 轉軸視訊 · 自動PiP</div>
                 </div>
             </div>
         </div>
@@ -716,7 +706,7 @@
             </div>
         </div>
 
-        <!-- 命令區 - 保留按鈕顏色已改回琥珀色 -->
+        <!-- 命令區 -->
         <div id="commandArea" class="control-panel">
             <div style="display:flex; height:100%; gap:5px; padding:0 4px;">
                 <button id="btnHome" class="game-btn btn-gray" style="flex:1;">首頁</button>
@@ -738,18 +728,14 @@
                 setTimeout(() => statusMsg.classList.remove('show'), 2500);
             }
 
-            // 視訊元素
-            const videos = [
-                document.getElementById('videoL'),
-                document.getElementById('videoC'),
-                document.getElementById('videoR')
-            ];
+            // 單一視訊元素
+            const mainVideo = document.getElementById('mainVideo');
 
             // 模擬視訊串流
             function createMockVideo() {
                 const canvas = document.createElement('canvas');
-                canvas.width = 320;
-                canvas.height = 240;
+                canvas.width = 640;  // 寬一點，讓內容更清楚
+                canvas.height = 360;
                 const ctx = canvas.getContext('2d');
                 
                 let frame = 0;
@@ -759,18 +745,27 @@
                     ctx.fillStyle = '#1b2633';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     
-                    const symbols = ['7', '🍒', '⭐', '🍋', '🔔'];
-                    const symbol = symbols[Math.floor(frame / 15) % symbols.length];
+                    // 繪製滾輪符號（放大版）
+                    const symbols = ['7', '🍒', '⭐', '🍋', '🔔', '7', '🍒'];
+                    const symbol = symbols[Math.floor(frame / 10) % symbols.length];
                     
-                    ctx.font = 'bold 80px Arial';
+                    ctx.font = 'bold 160px Arial';
                     ctx.fillStyle = '#c0e2f0';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText(symbol, canvas.width/2, canvas.height/2);
                     
+                    // 繪製邊框
                     ctx.strokeStyle = '#3d5c70';
-                    ctx.lineWidth = 4;
-                    ctx.strokeRect(2, 2, canvas.width-4, canvas.height-4);
+                    ctx.lineWidth = 8;
+                    ctx.strokeRect(4, 4, canvas.width-8, canvas.height-8);
+                    
+                    // 繪製背景圖案
+                    ctx.font = 'bold 40px Arial';
+                    ctx.fillStyle = '#2a4050';
+                    ctx.globalAlpha = 0.3;
+                    ctx.fillText('AUTO PIP', canvas.width/2, canvas.height-40);
+                    ctx.globalAlpha = 1;
                     
                     frame++;
                 }, 100);
@@ -779,10 +774,8 @@
             }
 
             // 設定視訊串流
-            videos.forEach(video => {
-                const stream = createMockVideo();
-                video.srcObject = stream;
-            });
+            const stream = createMockVideo();
+            mainVideo.srcObject = stream;
 
             // 遊戲狀態
             let currentMachine = { 
@@ -818,9 +811,8 @@
                 currentMachine.totalSpins++;
                 updateDisplay();
                 
-                videos.forEach(video => {
-                    video.play().catch(e => {});
-                });
+                // 重新啟動視訊（模擬拉霸）
+                mainVideo.play().catch(e => {});
                 
                 rolling = true;
                 showMessage('滾輪轉動中');
@@ -846,35 +838,14 @@
                 spinOnce();
             });
 
-            // 停止按鈕
+            // 停止按鈕（現在控制單一視訊）
             const stops = ['btnStopL','btnStopC','btnStopR'].map(id => document.getElementById(id));
             stops.forEach((btn, i) => {
                 btn.addEventListener('click', ()=>{
                     if (!rolling || autoMode) return;
                     rolling = false;
-                    showMessage(`第${i+1}輪停止`);
+                    showMessage(`第${i+1}輪停止 (單一視訊模式)`);
                 });
-            });
-
-            // 自動按鈕
-            document.getElementById('btnAuto').addEventListener('click', ()=>{
-                if (autoMode) {
-                    stopAutoMode();
-                    showMessage('自動模式關閉');
-                } else {
-                    autoMode = true;
-                    document.getElementById('btnAuto').classList.add('btn-green');
-                    document.getElementById('btnAuto').innerText = '自動中';
-                    showMessage('自動模式啟動', 'success');
-                    
-                    if (!rolling) spinOnce();
-                    
-                    if (autoInterval) clearInterval(autoInterval);
-                    autoInterval = setInterval(() => {
-                        if (!autoMode) return;
-                        spinOnce();
-                    }, 3000);
-                }
             });
 
             // ===== PiP 滑軌開關 =====
@@ -882,9 +853,8 @@
             const sliderThumb = document.getElementById('pipSliderThumb');
             const pipStatus = document.getElementById('pipStatus');
             
-            let pipEnabled = false;  // PiP 開關狀態
+            let pipEnabled = false;
 
-            // 更新滑軌位置和狀態
             function updateSliderPosition() {
                 if (pipEnabled) {
                     sliderThumb.style.left = 'calc(100% - 34px)';
@@ -899,15 +869,12 @@
                 }
             }
 
-            // 嘗試進入 PiP
             async function enterPiP() {
                 try {
-                    // iOS Safari 需要用戶手勢才能進入 PiP
-                    // 我們使用第一個視訊來嘗試
-                    if (videos[0].webkitSupportsPresentationMode && 
-                        videos[0].webkitSupportsPresentationMode('picture-in-picture')) {
+                    if (mainVideo.webkitSupportsPresentationMode && 
+                        mainVideo.webkitSupportsPresentationMode('picture-in-picture')) {
                         
-                        await videos[0].webkitSetPresentationMode('picture-in-picture');
+                        await mainVideo.webkitSetPresentationMode('picture-in-picture');
                         pipEnabled = true;
                         updateSliderPosition();
                         showMessage('子母畫面已啟動', 'success');
@@ -924,27 +891,22 @@
                 }
             }
 
-            // 離開 PiP
             function exitPiP() {
-                videos.forEach(v => {
-                    if (v.webkitPresentationMode === 'picture-in-picture') {
-                        v.webkitSetPresentationMode('inline');
-                    }
-                });
+                if (mainVideo.webkitPresentationMode === 'picture-in-picture') {
+                    mainVideo.webkitSetPresentationMode('inline');
+                }
                 pipEnabled = false;
                 updateSliderPosition();
                 showMessage('已退出子母畫面');
             }
 
             // 監聽 PiP 狀態變化
-            videos.forEach(v => {
-                v.addEventListener('webkitpresentationmodechanged', () => {
-                    const active = videos.some(v => v.webkitPresentationMode === 'picture-in-picture');
-                    if (active !== pipEnabled) {
-                        pipEnabled = active;
-                        updateSliderPosition();
-                    }
-                });
+            mainVideo.addEventListener('webkitpresentationmodechanged', () => {
+                const active = (mainVideo.webkitPresentationMode === 'picture-in-picture');
+                if (active !== pipEnabled) {
+                    pipEnabled = active;
+                    updateSliderPosition();
+                }
             });
 
             // 滑軌點擊事件
@@ -954,62 +916,35 @@
                 const midPoint = rect.width / 2;
                 
                 if (clickX > midPoint) {
-                    // 點擊右半邊 -> 開啟
-                    if (!pipEnabled) {
-                        enterPiP();
-                    }
+                    if (!pipEnabled) enterPiP();
                 } else {
-                    // 點擊左半邊 -> 關閉
-                    if (pipEnabled) {
-                        exitPiP();
-                    }
+                    if (pipEnabled) exitPiP();
                 }
             });
 
-            // 也可以拖曳圓點（簡化版）
-            let isDragging = false;
-            
-            sliderThumb.addEventListener('touchstart', (e) => {
-                isDragging = true;
-                e.preventDefault();
-            });
-
-            document.addEventListener('touchmove', (e) => {
-                if (!isDragging) return;
-                e.preventDefault();
-                
-                const touch = e.touches[0];
-                const rect = sliderTrack.getBoundingClientRect();
-                let x = touch.clientX - rect.left - 17; // 圓點寬度一半
-                
-                // 限制範圍
-                x = Math.max(-2, Math.min(rect.width - 34, x));
-                
-                sliderThumb.style.left = x + 'px';
-            });
-
-            document.addEventListener('touchend', (e) => {
-                if (!isDragging) return;
-                isDragging = false;
-                
-                const rect = sliderTrack.getBoundingClientRect();
-                const thumbLeft = parseInt(sliderThumb.style.left) || -2;
-                const midPoint = rect.width / 2 - 17;
-                
-                if (thumbLeft > midPoint) {
-                    // 滑到右邊 -> 開啟
-                    if (!pipEnabled) {
-                        enterPiP();
-                    } else {
-                        updateSliderPosition(); // 確保位置正確
-                    }
+            // 自動按鈕 - 啟動自動模式 + 自動 PiP
+            document.getElementById('btnAuto').addEventListener('click', ()=>{
+                if (autoMode) {
+                    stopAutoMode();
+                    showMessage('自動模式關閉');
                 } else {
-                    // 滑到左邊 -> 關閉
-                    if (pipEnabled) {
-                        exitPiP();
-                    } else {
-                        updateSliderPosition(); // 確保位置正確
+                    autoMode = true;
+                    document.getElementById('btnAuto').classList.add('btn-green');
+                    document.getElementById('btnAuto').innerText = '自動中';
+                    showMessage('自動模式啟動，自動開啟子母畫面', 'success');
+                    
+                    // 自動開啟 PiP
+                    if (!pipEnabled) {
+                        setTimeout(() => enterPiP(), 500);
                     }
+                    
+                    if (!rolling) spinOnce();
+                    
+                    if (autoInterval) clearInterval(autoInterval);
+                    autoInterval = setInterval(() => {
+                        if (!autoMode) return;
+                        spinOnce();
+                    }, 3000);
                 }
             });
 
@@ -1055,7 +990,7 @@
             zone.addEventListener('touchstart', showNav);
 
             // 其他按鈕
-            document.getElementById('btnReserve').addEventListener('click', ()=> showMessage('保留功能'));  // 顏色已改回
+            document.getElementById('btnReserve').addEventListener('click', ()=> showMessage('保留功能'));
             document.getElementById('maxBet').addEventListener('click', ()=> showMessage('MAX BET'));
             document.getElementById('btnHome').addEventListener('click', ()=> showMessage('首頁'));
             document.getElementById('btnBreak').addEventListener('click', ()=> { 
@@ -1090,37 +1025,10 @@
 
             // 啟動視訊
             document.addEventListener('touchstart', () => {
-                videos.forEach(v => {
-                    if (v.paused) {
-                        v.play().catch(e => {});
-                    }
-                });
-            }, { once: true });
-
-            // 自動模式 + PiP 自動開啟
-            // 當自動模式啟動時，自動開啟 PiP
-            const originalStartAutoMode = startAutoMode;
-            window.startAutoMode = function() {
-                if (!autoMode) {
-                    autoMode = true;
-                    document.getElementById('btnAuto').classList.add('btn-green');
-                    document.getElementById('btnAuto').innerText = '自動中';
-                    showMessage('自動模式啟動，自動開啟子母畫面', 'success');
-                    
-                    // 自動開啟 PiP
-                    if (!pipEnabled) {
-                        setTimeout(() => enterPiP(), 500);
-                    }
-                    
-                    if (!rolling) spinOnce();
-                    
-                    if (autoInterval) clearInterval(autoInterval);
-                    autoInterval = setInterval(() => {
-                        if (!autoMode) return;
-                        spinOnce();
-                    }, 3000);
+                if (mainVideo.paused) {
+                    mainVideo.play().catch(e => {});
                 }
-            };
+            }, { once: true });
         })();
     </script>
 </body>
