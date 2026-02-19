@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>機台界面 · 單一視訊轉軸＋自動PiP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg7.min.css">
@@ -85,17 +85,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;  /* 完整顯示影片內容，不裁切，可能留有黑邊 */
+            object-fit: contain;
             background: transparent;
             z-index: 1;
         }
-
-        /* 如果想讓影片填滿整個區域（可能會裁切部分內容），可以使用 object-fit: cover */
-        /*
-        #remotePlayer {
-            object-fit: cover;
-        }
-        */
 
         .video-placeholder {
             position: absolute;
@@ -307,7 +300,6 @@
         }
         .btn-red { background: #be3e62; border-color: #d4668a; }
         
-        /* 保留按鈕 - 琥珀色 */
         .btn-amber { 
             background: #c47c34; 
             border-color: #efb36e; 
@@ -552,6 +544,22 @@
             font-weight: bold;
         }
 
+        /* VIVO 手機專用提示 */
+        .vivo-tip {
+            color: #ffaa00;
+            font-size: 10px;
+            margin-top: 8px;
+            text-align: center;
+            padding: 6px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            border: 1px solid #ffaa00;
+            display: none;
+        }
+        .vivo-tip.show {
+            display: block;
+        }
+
         .drawer-item {
             background: #1d3342;
             border: 1px solid #2e6078;
@@ -650,9 +658,16 @@
                                 <span class="pip-slider-label">開</span>
                             </div>
                             
-                            <!-- 狀態顯示 - 純文字 -->
+                            <!-- 狀態顯示 -->
                             <div class="pip-slider-status" id="pipStatus">
                                 子母畫面關閉
+                            </div>
+                            
+                            <!-- VIVO 手機專用提示 (初始隱藏) -->
+                            <div class="vivo-tip" id="vivoTip">
+                                📱 VIVO手機請依指示操作：<br>
+                                1. 點影片右下角「全螢幕」<br>
+                                2. 按手機「Home鍵」返回桌面
                             </div>
                         </div>
 
@@ -683,7 +698,7 @@
                            class="absolute inset-0 w-full h-full object-contain bg-transparent"
                            style="padding-right: 0px;" 
                            autoplay loop muted></video>
-                    <!-- 視覺占位符（半透明） -->
+                    <!-- 視覺占位符 -->
                     <div class="video-placeholder">🎰 轉軸視訊 · 自動PiP</div>
                 </div>
             </div>
@@ -739,6 +754,7 @@
     <script>
         (function() {
             const statusMsg = document.getElementById('statusMessage');
+            const vivoTip = document.getElementById('vivoTip');
             
             function showMessage(msg, type = 'info') {
                 statusMsg.innerText = msg;
@@ -747,13 +763,25 @@
                 setTimeout(() => statusMsg.classList.remove('show'), 2500);
             }
 
-            // 獲取新的視訊元素
+            // 偵測是否為 VIVO 手機
+            function isVivoPhone() {
+                const ua = navigator.userAgent.toLowerCase();
+                return ua.includes('vivo') || ua.includes('bbk') || ua.includes('funtouch') || 
+                       ua.includes('iqoo') || ua.includes('1831'); // VIVO 常見的型號標記
+            }
+
+            // 如果是 VIVO 手機，顯示提示
+            if (isVivoPhone()) {
+                vivoTip.classList.add('show');
+                console.log('偵測到 VIVO 手機，啟用專用 PiP 提示');
+            }
+
+            // 獲取視訊元素
             const mainVideo = document.getElementById('remotePlayer');
 
-            // 模擬視訊串流 (使用 canvas 產生內容)
+            // 模擬視訊串流
             function createMockVideo() {
                 const canvas = document.createElement('canvas');
-                // 設定為直立比例 (3:4 或 9:16 較符合直立UI)
                 canvas.width = 360;
                 canvas.height = 640;
                 const ctx = canvas.getContext('2d');
@@ -765,7 +793,6 @@
                     ctx.fillStyle = '#1b2633';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     
-                    // 繪製滾輪符號（直立顯示）
                     const symbols = ['7', '🍒', '⭐', '🍋', '🔔', '7', '🍒'];
                     const symbol = symbols[Math.floor(frame / 10) % symbols.length];
                     
@@ -775,12 +802,10 @@
                     ctx.textBaseline = 'middle';
                     ctx.fillText(symbol, canvas.width/2, canvas.height/2);
                     
-                    // 繪製邊框
                     ctx.strokeStyle = '#3d5c70';
                     ctx.lineWidth = 8;
                     ctx.strokeRect(4, 4, canvas.width-8, canvas.height-8);
                     
-                    // 繪製背景文字
                     ctx.font = 'bold 40px Arial';
                     ctx.fillStyle = '#2a4050';
                     ctx.globalAlpha = 0.3;
@@ -831,7 +856,6 @@
                 currentMachine.totalSpins++;
                 updateDisplay();
                 
-                // 重新啟動視訊（模擬拉霸）
                 mainVideo.play().catch(e => {});
                 
                 rolling = true;
@@ -858,7 +882,7 @@
                 spinOnce();
             });
 
-            // 停止按鈕（現在控制單一視訊）
+            // 停止按鈕
             const stops = ['btnStopL','btnStopC','btnStopR'].map(id => document.getElementById(id));
             stops.forEach((btn, i) => {
                 btn.addEventListener('click', ()=>{
@@ -868,7 +892,7 @@
                 });
             });
 
-            // ===== PiP 滑軌開關 =====
+            // ===== PiP 滑軌開關（VIVO 相容版）=====
             const sliderTrack = document.getElementById('pipSliderTrack');
             const sliderThumb = document.getElementById('pipSliderThumb');
             const pipStatus = document.getElementById('pipStatus');
@@ -889,9 +913,53 @@
                 }
             }
 
-            async function enterPiP() {
+            // VIVO 專用的 PiP 啟動方式
+            async function enterPiPVivo() {
                 try {
-                    // 使用 remotePlayer 進行 PiP
+                    // 顯示 VIVO 專用提示
+                    showMessage('VIVO手機：請全螢幕後按Home鍵', 'info');
+                    
+                    // 嘗試自動進入全螢幕
+                    if (mainVideo.requestFullscreen) {
+                        await mainVideo.requestFullscreen();
+                    } else if (mainVideo.webkitRequestFullscreen) {
+                        await mainVideo.webkitRequestFullscreen();
+                    }
+                    
+                    // 監聽全螢幕變化
+                    function onFullscreenChange() {
+                        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                            // 假設使用者按了 Home 鍵
+                            setTimeout(() => {
+                                pipEnabled = true;
+                                updateSliderPosition();
+                                showMessage('子母畫面已透過系統啟動', 'success');
+                            }, 500);
+                            
+                            document.removeEventListener('fullscreenchange', onFullscreenChange);
+                            document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
+                        }
+                    }
+                    
+                    document.addEventListener('fullscreenchange', onFullscreenChange);
+                    document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+                    
+                    // 3秒後提醒
+                    setTimeout(() => {
+                        if (document.fullscreenElement || document.webkitFullscreenElement) {
+                            showMessage('請按手機Home鍵返回桌面', 'info');
+                        }
+                    }, 3000);
+                    
+                } catch (err) {
+                    console.log('VIVO PiP 引導失敗:', err);
+                    showMessage('請手動操作：全螢幕影片後按Home鍵', 'error');
+                }
+            }
+
+            // 標準 PiP 啟動方式
+            async function enterPiPStandard() {
+                try {
                     if (mainVideo.webkitSupportsPresentationMode && 
                         mainVideo.webkitSupportsPresentationMode('picture-in-picture')) {
                         
@@ -899,16 +967,26 @@
                         pipEnabled = true;
                         updateSliderPosition();
                         showMessage('子母畫面已啟動', 'success');
-                    } else {
-                        showMessage('此瀏覽器不支援子母畫面', 'error');
-                        pipEnabled = false;
-                        updateSliderPosition();
+                        return true;
                     }
+                    return false;
                 } catch (err) {
-                    console.log('PiP 啟動失敗:', err);
-                    showMessage('請先點擊畫面啟動視訊', 'error');
-                    pipEnabled = false;
-                    updateSliderPosition();
+                    console.log('標準 PiP 失敗:', err);
+                    return false;
+                }
+            }
+
+            // 統一的 PiP 啟動函數
+            async function enterPiP() {
+                // 如果是 VIVO 手機，優先使用 VIVO 專用方式
+                if (isVivoPhone()) {
+                    await enterPiPVivo();
+                } else {
+                    // 非 VIVO 手機嘗試標準方式
+                    const success = await enterPiPStandard();
+                    if (!success) {
+                        showMessage('您的裝置不支援自動PiP', 'error');
+                    }
                 }
             }
 
@@ -937,13 +1015,15 @@
                 const midPoint = rect.width / 2;
                 
                 if (clickX > midPoint) {
-                    if (!pipEnabled) enterPiP();
+                    if (!pipEnabled) {
+                        enterPiP();
+                    }
                 } else {
                     if (pipEnabled) exitPiP();
                 }
             });
 
-            // 自動按鈕 - 啟動自動模式 + 自動 PiP
+            // 自動按鈕
             document.getElementById('btnAuto').addEventListener('click', ()=>{
                 if (autoMode) {
                     stopAutoMode();
@@ -952,7 +1032,7 @@
                     autoMode = true;
                     document.getElementById('btnAuto').classList.add('btn-green');
                     document.getElementById('btnAuto').innerText = '自動中';
-                    showMessage('自動模式啟動，自動開啟子母畫面', 'success');
+                    showMessage('自動模式啟動', 'success');
                     
                     // 自動開啟 PiP
                     if (!pipEnabled) {
