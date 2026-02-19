@@ -50,7 +50,7 @@
         #panelBottom { flex: 0 0 13%; min-height: 68px; }
         #commandArea { flex: 0 0 8%; min-height: 48px; }
 
-        /* ----- 單一視訊轉軸區 (配合新的 video 樣式調整) ----- */
+        /* ----- 單一視訊轉軸區 (直立顯示) ----- */
         .reel-container {
             width: 100%;
             height: 100%;
@@ -62,7 +62,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* 確保旋轉內容不會溢出圓角 */
+            overflow: hidden;
         }
 
         .single-reel {
@@ -71,32 +71,32 @@
             background: #1b2633;
             border-radius: 20px;
             border: 1px solid #3d5c70;
-            overflow: hidden; /* 隱藏超出部分，配合旋轉 */
+            overflow: hidden;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* 新的 video 樣式 - 完全按照需求，並加入定位以適應容器 */
+        /* 直立顯示的影片樣式 */
         #remotePlayer {
-            position: absolute; /* 讓它相對於 .single-reel 定位 */
-            top: 50%;
-            left: 50%;
-            width: 889px;       /* 保持原寬高 */
-            height: 500px;
-            object-fit: cover;  /* 保持 cover 以填滿旋轉後的區域 */
-            object-position: right center; /* 對齊右側，因旋轉可能偏移 */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;  /* 完整顯示影片內容，不裁切，可能留有黑邊 */
             background: transparent;
-            transform: translate(-50%, -50%) rotate(-90deg); /* 先置中再旋轉，模擬 -rotate-90 與 -translate-x-full 的綜合效果 */
-            /* 註：原 class 中有 -translate-x-full（向左平移自身寬度）和 -rotate-90，
-               這裡使用 transform 組合來達到類似效果：旋轉 -90deg 並調整位置使其中心對齊容器中央，
-               再透過 object-position 微調視覺位置。如需完全精確，可依實際情況調整 translate 值。 */
             z-index: 1;
-            pointer-events: none; /* 讓點擊可以穿透到按鈕（如果需要） */
         }
 
-        /* 原 video-placeholder 調整 z-index 以位於 video 之下或之上？這裡維持在上層作為提示，但 video 會蓋住它 */
+        /* 如果想讓影片填滿整個區域（可能會裁切部分內容），可以使用 object-fit: cover */
+        /*
+        #remotePlayer {
+            object-fit: cover;
+        }
+        */
+
         .video-placeholder {
             position: absolute;
             top: 0;
@@ -112,7 +112,8 @@
             text-shadow: 0 2px 4px #000;
             background: rgba(0,0,0,0.3);
             pointer-events: none;
-            z-index: 2; /* 高於 video，但 video 會蓋住背景，所以實際上文字會被蓋住，可考慮移除或降低透明度 */
+            z-index: 2;
+            opacity: 0.5;
         }
 
         /* PiP 啟用時的視覺提示 */
@@ -539,7 +540,7 @@
             border: 2px solid #eed685;
         }
 
-        /* 滑軌狀態文字 - 移除啟用中的符號 */
+        /* 滑軌狀態文字 */
         .pip-slider-status {
             text-align: center;
             margin-top: 10px;
@@ -649,7 +650,7 @@
                                 <span class="pip-slider-label">開</span>
                             </div>
                             
-                            <!-- 狀態顯示 - 已移除啟用中的符號和文字，只保留單純文字 -->
+                            <!-- 狀態顯示 - 純文字 -->
                             <div class="pip-slider-status" id="pipStatus">
                                 子母畫面關閉
                             </div>
@@ -671,14 +672,19 @@
             </div>
         </div>
 
-        <!-- 單一視訊轉軸區 - 使用新的 video 元素 -->
+        <!-- 單一視訊轉軸區 - 正常直立顯示的影片 -->
         <div id="content">
             <div class="reel-container">
                 <div class="single-reel">
-                    <!-- 替換為指定的 video 標籤，並加入 id 以供 JavaScript 選取 -->
-                    <video data-v-396f44c9="" id="remotePlayer" width="889px" height="500px" playsinline="" webkit-playsinline="" class="absolute z-0 object-cover object-right bg-transparent transform -translate-x-full -rotate-90 origin-top-right" style="padding-right: 0px;" autoplay loop muted></video>
-                    <!-- 保留占位符作為視覺提示，但會被 video 蓋住；可視需求隱藏 -->
-                    <div class="video-placeholder" style="opacity:0.5; background:rgba(0,0,0,0.1);">🎰 轉軸視訊 · 自動PiP</div>
+                    <!-- 影片元素：直立顯示，無旋轉偏移，填滿容器 -->
+                    <video data-v-396f44c9="" id="remotePlayer" 
+                           width="100%" height="100%" 
+                           playsinline="" webkit-playsinline="" 
+                           class="absolute inset-0 w-full h-full object-contain bg-transparent"
+                           style="padding-right: 0px;" 
+                           autoplay loop muted></video>
+                    <!-- 視覺占位符（半透明） -->
+                    <div class="video-placeholder">🎰 轉軸視訊 · 自動PiP</div>
                 </div>
             </div>
         </div>
@@ -747,8 +753,9 @@
             // 模擬視訊串流 (使用 canvas 產生內容)
             function createMockVideo() {
                 const canvas = document.createElement('canvas');
-                canvas.width = 889;   // 配合 video 寬度
-                canvas.height = 500;  // 配合 video 高度
+                // 設定為直立比例 (3:4 或 9:16 較符合直立UI)
+                canvas.width = 360;
+                canvas.height = 640;
                 const ctx = canvas.getContext('2d');
                 
                 let frame = 0;
@@ -758,11 +765,11 @@
                     ctx.fillStyle = '#1b2633';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
                     
-                    // 繪製滾輪符號（放大版）
+                    // 繪製滾輪符號（直立顯示）
                     const symbols = ['7', '🍒', '⭐', '🍋', '🔔', '7', '🍒'];
                     const symbol = symbols[Math.floor(frame / 10) % symbols.length];
                     
-                    ctx.font = 'bold 200px Arial'; // 稍微加大以配合較高解析度
+                    ctx.font = 'bold 200px Arial';
                     ctx.fillStyle = '#c0e2f0';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
@@ -773,11 +780,11 @@
                     ctx.lineWidth = 8;
                     ctx.strokeRect(4, 4, canvas.width-8, canvas.height-8);
                     
-                    // 繪製背景圖案 (因旋轉後可能不易看到，但仍保留)
-                    ctx.font = 'bold 50px Arial';
+                    // 繪製背景文字
+                    ctx.font = 'bold 40px Arial';
                     ctx.fillStyle = '#2a4050';
                     ctx.globalAlpha = 0.3;
-                    ctx.fillText('AUTO PIP', canvas.width/2, canvas.height-50);
+                    ctx.fillText('AUTO PIP', canvas.width/2, canvas.height-80);
                     ctx.globalAlpha = 1;
                     
                     frame++;
@@ -871,7 +878,6 @@
             function updateSliderPosition() {
                 if (pipEnabled) {
                     sliderThumb.style.left = 'calc(100% - 34px)';
-                    // 修改：只顯示純文字，不加符號
                     pipStatus.innerHTML = '子母畫面啟用中';
                     pipStatus.classList.add('active');
                     document.body.classList.add('pip-active');
