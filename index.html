@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>機台界面 · PiP整合抽屜</title>
+    <title>機台界面 · 自動PiP＋滑軌開關</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg7.min.css">
     <style>
@@ -106,28 +106,20 @@
             box-shadow: 0 0 0 3px #c9a244, 0 8px 0 #0a121c;
         }
 
-        /* 頂部面板數值顏色 - 修復黑色字體問題 */
-        #panelTop dl { 
-            text-align: center; 
-        }
+        /* 頂部面板數值顏色 */
+        #panelTop dl { text-align: center; }
         #panelTop dt {
             font-size: 9px;
-            color: #a0c8dd !important;  /* 強制使用這個顏色 */
+            color: #a0c8dd !important;
             font-weight: bold;
         }
         #panelTop dd {
             font-size: 13px;
             font-family: 'DSEG7 Classic', monospace;
-            color: #f3de8a !important;  /* 強制使用金色 */
-        }
-
-        /* 確保 Medal 也是金色 */
-        #medalNum {
             color: #f3de8a !important;
         }
 
-        /* 確保 BB Point 也是金色 */
-        #bbPoint {
+        #medalNum, #bbPoint {
             color: #f3de8a !important;
         }
 
@@ -298,9 +290,17 @@
             box-shadow: 0 1px 0 #0a1a22, 0 2px 4px #000;
         }
         .btn-red { background: #be3e62; border-color: #d4668a; }
-        .btn-yellow { background: #c9a244; border-color: #eed685; color: #111; }
+        
+        /* 保留按鈕 - 改回原本的琥珀色 */
+        .btn-amber { 
+            background: #c47c34; 
+            border-color: #efb36e; 
+            color: white; 
+        }
+        
         .btn-green { background: #1f8f6b; border-color: #52c2a0; }
         .btn-purple { background: #8a5fb0; border-color: #b792e6; }
+        .btn-gray { background: #3a4b5e; border-color: #6f859b; }
 
         .stop-btn {
             width: 44px;
@@ -350,56 +350,6 @@
             transition: transform 0.3s ease;
         }
         .status-message.show { transform: translateY(0); }
-
-        /* PiP 教學提示 */
-        .pip-tutorial {
-            position: fixed;
-            top: 50%;
-            left: 20px;
-            right: 20px;
-            transform: translateY(-50%);
-            background: #1f3e50;
-            border: 3px solid #f5e37a;
-            border-radius: 30px;
-            padding: 25px 20px;
-            z-index: 10000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 10px 0 #0f303f;
-        }
-        .pip-tutorial.show { display: flex; }
-        .pip-tutorial-title {
-            color: #f5e37a;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .pip-tutorial-step {
-            color: white;
-            font-size: 16px;
-            text-align: center;
-            line-height: 2;
-        }
-        .pip-tutorial-highlight {
-            background: #f5e37a;
-            color: #111;
-            padding: 5px 15px;
-            border-radius: 40px;
-            font-weight: bold;
-            margin: 5px 0;
-        }
-        .pip-tutorial-close {
-            background: #c9a244;
-            border: none;
-            color: #111;
-            font-weight: bold;
-            padding: 12px 30px;
-            border-radius: 40px;
-            font-size: 16px;
-            margin-top: 10px;
-            box-shadow: 0 4px 0 #7a5f2a;
-        }
 
         .prize-light-navigation {
             position: absolute;
@@ -510,61 +460,80 @@
             background: #14222e;
         }
 
-        /* PiP 專區 */
+        /* PiP 滑軌開關 */
         .pip-section {
             background: #1a3342;
-            border: 2px solid #f5e37a;
+            border: 2px solid #2e7a9a;
             border-radius: 16px;
-            padding: 12px 8px;
-            margin-bottom: 12px;
+            padding: 15px 10px;
+            margin-bottom: 15px;
         }
 
         .pip-title {
             color: #f5e37a;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: bold;
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
         }
 
-        .pip-btn {
-            width: 100%;
-            height: 44px;
+        /* 滑軌容器 */
+        .pip-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .pip-slider-label {
+            color: #8fcae0;
+            font-size: 11px;
+            min-width: 45px;
+        }
+
+        /* 滑軌本體 */
+        .pip-slider-track {
+            flex: 1;
+            height: 24px;
+            background: #0f2a36;
             border-radius: 30px;
-            font-weight: bold;
-            font-size: 14px;
-            border: 1px solid;
-            box-shadow: 0 3px 0 #0f303f;
-            transition: 0.1s;
+            border: 1px solid #3d7895;
+            position: relative;
             cursor: pointer;
+            box-shadow: inset 0 2px 5px #000;
+        }
+
+        /* 滑動圓點 */
+        .pip-slider-thumb {
+            width: 34px;
+            height: 34px;
+            background: #f5e37a;
+            border-radius: 50%;
+            position: absolute;
+            top: -5px;
+            left: -2px;
+            box-shadow: 0 3px 0 #7a5f2a, 0 2px 8px #000;
+            transition: left 0.1s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        .pip-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #0f303f;
-        }
-        .pip-btn-teach {
-            background: #f5e37a;
-            border-color: #eed685;
             color: #111;
+            font-size: 16px;
+            font-weight: bold;
+            border: 2px solid #eed685;
         }
 
-        .pip-status-badge {
-            background: #0f3545;
-            border-radius: 20px;
-            padding: 6px 8px;
-            font-size: 10px;
-            color: #8fcae0;
+        /* 滑軌狀態文字 */
+        .pip-slider-status {
             text-align: center;
-            margin-top: 8px;
+            margin-top: 10px;
+            font-size: 11px;
+            color: #8fcae0;
         }
-        .pip-status-badge.active {
-            background: #f5e37a20;
+        .pip-slider-status.active {
             color: #f5e37a;
+            font-weight: bold;
         }
 
         .drawer-item {
@@ -591,17 +560,6 @@
 </head>
 <body>
     <div class="status-message" id="statusMessage"></div>
-    
-    <!-- PiP 教學視窗 -->
-    <div class="pip-tutorial" id="pipTutorial">
-        <div class="pip-tutorial-title">📺 子母畫面教學</div>
-        <div class="pip-tutorial-step">
-            1. 找到轉軸區的視訊<br>
-            2. <span class="pip-tutorial-highlight">長按視訊 1-2 秒</span><br>
-            3. 選擇「進入子母畫面」
-        </div>
-        <button class="pip-tutorial-close" id="closeTutorial">知道了</button>
-    </div>
 
     <!-- 主機台 -->
     <div id="playMainArea">
@@ -653,7 +611,7 @@
                     <button class="cyber-arrow" id="nextPrizeLightPage">▶</button>
                 </div>
 
-                <!-- 抽屜 - 包含 PiP 教學按鈕 -->
+                <!-- 抽屜 - 滑軌開關 -->
                 <div class="drawer-trigger-area" id="drawerTriggerArea">
                     <div class="drawer-arrow" id="drawerArrow">◀</div>
                 </div>
@@ -663,17 +621,22 @@
                         <button id="drawerCloseBtn" style="background:transparent; border:none; color:#8fcae0; font-size:16px;">✕</button>
                     </div>
                     <div class="drawer-content">
-                        <!-- PiP 教學區塊 -->
+                        <!-- PiP 滑軌開關 -->
                         <div class="pip-section">
-                            <div class="pip-title">📺 子母畫面</div>
-                            <button class="pip-btn pip-btn-teach" id="showPiPTutorial">
-                                <span>🎓</span> 如何開啟子母畫面
-                            </button>
-                            <button class="pip-btn pip-btn-teach" id="closePiP">
-                                <span>⏹</span> 關閉子母畫面
-                            </button>
-                            <div class="pip-status-badge" id="pipStatus">
-                                ⚪ 子母畫面未啟用
+                            <div class="pip-title">📺 子母視訊畫面</div>
+                            
+                            <!-- 滑軌開關 -->
+                            <div class="pip-slider-container">
+                                <span class="pip-slider-label">關</span>
+                                <div class="pip-slider-track" id="pipSliderTrack">
+                                    <div class="pip-slider-thumb" id="pipSliderThumb">◉</div>
+                                </div>
+                                <span class="pip-slider-label">開</span>
+                            </div>
+                            
+                            <!-- 狀態顯示 -->
+                            <div class="pip-slider-status" id="pipStatus">
+                                ⚪ 子母畫面關閉
                             </div>
                         </div>
 
@@ -700,24 +663,24 @@
                     <video class="reel-video" id="videoL" autoplay loop muted playsinline webkit-playsinline>
                         <source src="#" type="video/mp4">
                     </video>
-                    <div class="video-placeholder">🎰 左輪 · 長按可PiP</div>
+                    <div class="video-placeholder">🎰 左輪</div>
                 </div>
                 <div class="reel" id="reelC">
                     <video class="reel-video" id="videoC" autoplay loop muted playsinline webkit-playsinline>
                         <source src="#" type="video/mp4">
                     </video>
-                    <div class="video-placeholder">🎰 中輪 · 長按可PiP</div>
+                    <div class="video-placeholder">🎰 中輪</div>
                 </div>
                 <div class="reel" id="reelR">
                     <video class="reel-video" id="videoR" autoplay loop muted playsinline webkit-playsinline>
                         <source src="#" type="video/mp4">
                     </video>
-                    <div class="video-placeholder">🎰 右輪 · 長按可PiP</div>
+                    <div class="video-placeholder">🎰 右輪</div>
                 </div>
             </div>
         </div>
 
-        <!-- 頂部面板 - 字體顏色已修復 -->
+        <!-- 頂部面板 -->
         <div id="panelTop" class="control-panel">
             <div style="display: flex; align-items: center; height:100%; padding:0 4px;">
                 <div style="width:18%;">
@@ -739,13 +702,11 @@
             </div>
         </div>
 
-        <!-- 底部面板 - 純手動遊玩 -->
+        <!-- 底部面板 -->
         <div id="panelBottom" class="control-panel">
             <div style="display:flex; align-items:center; justify-content:flex-start; height:100%; padding:0 6px;">
                 <div style="display:flex; justify-content:center; position:relative; left:25px;">
-                    <button class="joystick" id="lever">
-                        <div class="lever-base-ring"></div>
-                    </button>
+                    <button class="joystick" id="lever"></button>
                 </div>
                 <div style="display:flex; justify-content:center; gap:32px; margin-left:70px;">
                     <button class="stop-btn" id="btnStopL">⏹</button>
@@ -755,7 +716,7 @@
             </div>
         </div>
 
-        <!-- 命令區 -->
+        <!-- 命令區 - 保留按鈕顏色已改回琥珀色 -->
         <div id="commandArea" class="control-panel">
             <div style="display:flex; height:100%; gap:5px; padding:0 4px;">
                 <button id="btnHome" class="game-btn btn-gray" style="flex:1;">首頁</button>
@@ -768,9 +729,7 @@
 
     <script>
         (function() {
-            // 狀態訊息
             const statusMsg = document.getElementById('statusMessage');
-            const pipTutorial = document.getElementById('pipTutorial');
             
             function showMessage(msg, type = 'info') {
                 statusMsg.innerText = msg;
@@ -918,56 +877,140 @@
                 }
             });
 
-            // PiP 功能 - 改為教學模式
+            // ===== PiP 滑軌開關 =====
+            const sliderTrack = document.getElementById('pipSliderTrack');
+            const sliderThumb = document.getElementById('pipSliderThumb');
             const pipStatus = document.getElementById('pipStatus');
-            const showPiPTutorial = document.getElementById('showPiPTutorial');
-            const closePiP = document.getElementById('closePiP');
-            const closeTutorial = document.getElementById('closeTutorial');
+            
+            let pipEnabled = false;  // PiP 開關狀態
 
-            // 更新 PiP 狀態
-            function updatePiPStatus() {
-                const active = videos.some(v => v.webkitPresentationMode === 'picture-in-picture');
-                if (active) {
+            // 更新滑軌位置和狀態
+            function updateSliderPosition() {
+                if (pipEnabled) {
+                    sliderThumb.style.left = 'calc(100% - 34px)';
                     pipStatus.innerHTML = '✅ 子母畫面啟用中';
                     pipStatus.classList.add('active');
                     document.body.classList.add('pip-active');
                 } else {
-                    pipStatus.innerHTML = '⚪ 子母畫面未啟用';
+                    sliderThumb.style.left = '-2px';
+                    pipStatus.innerHTML = '⚪ 子母畫面關閉';
                     pipStatus.classList.remove('active');
                     document.body.classList.remove('pip-active');
                 }
             }
 
-            videos.forEach(v => {
-                v.addEventListener('webkitpresentationmodechanged', updatePiPStatus);
-            });
+            // 嘗試進入 PiP
+            async function enterPiP() {
+                try {
+                    // iOS Safari 需要用戶手勢才能進入 PiP
+                    // 我們使用第一個視訊來嘗試
+                    if (videos[0].webkitSupportsPresentationMode && 
+                        videos[0].webkitSupportsPresentationMode('picture-in-picture')) {
+                        
+                        await videos[0].webkitSetPresentationMode('picture-in-picture');
+                        pipEnabled = true;
+                        updateSliderPosition();
+                        showMessage('子母畫面已啟動', 'success');
+                    } else {
+                        showMessage('此瀏覽器不支援子母畫面', 'error');
+                        pipEnabled = false;
+                        updateSliderPosition();
+                    }
+                } catch (err) {
+                    console.log('PiP 啟動失敗:', err);
+                    showMessage('請先點擊畫面啟動視訊', 'error');
+                    pipEnabled = false;
+                    updateSliderPosition();
+                }
+            }
 
-            // 顯示教學
-            showPiPTutorial.addEventListener('click', () => {
-                pipTutorial.classList.add('show');
-                // 同時讓視訊閃爍提示
-                videos.forEach(v => {
-                    v.style.border = '3px solid #f5e37a';
-                    v.style.transition = 'border 0.3s';
-                });
-            });
-
-            // 關閉教學
-            closeTutorial.addEventListener('click', () => {
-                pipTutorial.classList.remove('show');
-                videos.forEach(v => {
-                    v.style.border = 'none';
-                });
-            });
-
-            // 關閉 PiP
-            closePiP.addEventListener('click', () => {
+            // 離開 PiP
+            function exitPiP() {
                 videos.forEach(v => {
                     if (v.webkitPresentationMode === 'picture-in-picture') {
                         v.webkitSetPresentationMode('inline');
                     }
                 });
+                pipEnabled = false;
+                updateSliderPosition();
                 showMessage('已退出子母畫面');
+            }
+
+            // 監聽 PiP 狀態變化
+            videos.forEach(v => {
+                v.addEventListener('webkitpresentationmodechanged', () => {
+                    const active = videos.some(v => v.webkitPresentationMode === 'picture-in-picture');
+                    if (active !== pipEnabled) {
+                        pipEnabled = active;
+                        updateSliderPosition();
+                    }
+                });
+            });
+
+            // 滑軌點擊事件
+            sliderTrack.addEventListener('click', (e) => {
+                const rect = sliderTrack.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const midPoint = rect.width / 2;
+                
+                if (clickX > midPoint) {
+                    // 點擊右半邊 -> 開啟
+                    if (!pipEnabled) {
+                        enterPiP();
+                    }
+                } else {
+                    // 點擊左半邊 -> 關閉
+                    if (pipEnabled) {
+                        exitPiP();
+                    }
+                }
+            });
+
+            // 也可以拖曳圓點（簡化版）
+            let isDragging = false;
+            
+            sliderThumb.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                e.preventDefault();
+            });
+
+            document.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                const touch = e.touches[0];
+                const rect = sliderTrack.getBoundingClientRect();
+                let x = touch.clientX - rect.left - 17; // 圓點寬度一半
+                
+                // 限制範圍
+                x = Math.max(-2, Math.min(rect.width - 34, x));
+                
+                sliderThumb.style.left = x + 'px';
+            });
+
+            document.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                const rect = sliderTrack.getBoundingClientRect();
+                const thumbLeft = parseInt(sliderThumb.style.left) || -2;
+                const midPoint = rect.width / 2 - 17;
+                
+                if (thumbLeft > midPoint) {
+                    // 滑到右邊 -> 開啟
+                    if (!pipEnabled) {
+                        enterPiP();
+                    } else {
+                        updateSliderPosition(); // 確保位置正確
+                    }
+                } else {
+                    // 滑到左邊 -> 關閉
+                    if (pipEnabled) {
+                        exitPiP();
+                    } else {
+                        updateSliderPosition(); // 確保位置正確
+                    }
+                }
             });
 
             // 購買代幣
@@ -1012,7 +1055,7 @@
             zone.addEventListener('touchstart', showNav);
 
             // 其他按鈕
-            document.getElementById('btnReserve').addEventListener('click', ()=> showMessage('保留功能'));
+            document.getElementById('btnReserve').addEventListener('click', ()=> showMessage('保留功能'));  // 顏色已改回
             document.getElementById('maxBet').addEventListener('click', ()=> showMessage('MAX BET'));
             document.getElementById('btnHome').addEventListener('click', ()=> showMessage('首頁'));
             document.getElementById('btnBreak').addEventListener('click', ()=> { 
@@ -1054,13 +1097,30 @@
                 });
             }, { once: true });
 
-            // 每5秒檢查一次字體顏色（確保不會跑掉）
-            setInterval(() => {
-                const bbPoint = document.getElementById('bbPoint');
-                const medalNum = document.getElementById('medalNum');
-                if (bbPoint) bbPoint.style.color = '#f3de8a';
-                if (medalNum) medalNum.style.color = '#f3de8a';
-            }, 1000);
+            // 自動模式 + PiP 自動開啟
+            // 當自動模式啟動時，自動開啟 PiP
+            const originalStartAutoMode = startAutoMode;
+            window.startAutoMode = function() {
+                if (!autoMode) {
+                    autoMode = true;
+                    document.getElementById('btnAuto').classList.add('btn-green');
+                    document.getElementById('btnAuto').innerText = '自動中';
+                    showMessage('自動模式啟動，自動開啟子母畫面', 'success');
+                    
+                    // 自動開啟 PiP
+                    if (!pipEnabled) {
+                        setTimeout(() => enterPiP(), 500);
+                    }
+                    
+                    if (!rolling) spinOnce();
+                    
+                    if (autoInterval) clearInterval(autoInterval);
+                    autoInterval = setInterval(() => {
+                        if (!autoMode) return;
+                        spinOnce();
+                    }, 3000);
+                }
+            };
         })();
     </script>
 </body>
